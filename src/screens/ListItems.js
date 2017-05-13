@@ -117,9 +117,9 @@ const styles = StyleSheet.create({
   },
   list_view: {
     flex: 1,
-    paddingTop: 10,
+    paddingTop: 5,
     paddingBottom: 250,
-    marginTop: 5
+    marginTop: 0
   },
   row: {
     borderRadius: 5,

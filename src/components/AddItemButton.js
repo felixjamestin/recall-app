@@ -27,8 +27,9 @@ const styles = StyleSheet.create({
     alignItems: "center"
   },
   show_add_item__button: {
-    bottom: 10,
-    paddingTop: 20
+    bottom: 0,
+    paddingTop: 20,
+    marginBottom: 10
   }
 });
 

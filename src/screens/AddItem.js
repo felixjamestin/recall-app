@@ -111,7 +111,8 @@ class AddItem extends React.Component {
         >
 
           <View style={styles.modal_sub_container}>
-            <TouchableHighlight
+            {/*
+              <TouchableHighlight
               style={styles.hide__container}
               activeOpacity={1}
               underlayColor="transparent"
@@ -121,6 +122,7 @@ class AddItem extends React.Component {
             >
               <Text style={styles.hide__text}>Pull to see items</Text>
             </TouchableHighlight>
+            */}
 
             <View style={styles.add_item__container}>
               <Text style={styles.add_item__title}>
@@ -155,7 +157,7 @@ class AddItem extends React.Component {
             activeOpacity={1}
             underlayColor={AppStyles.colors.redSecondaryDark}
           >
-            <Text style={styles.add_item_save__title}>Save Item</Text>
+            <Text style={styles.add_item_save__title}>Save</Text>
           </TouchableHighlight>
 
         </Modal>
@@ -190,17 +192,18 @@ const styles = StyleSheet.create({
   },
   modal: {
     flex: 1,
-    justifyContent: "flex-start",
+    justifyContent: "center",
     backgroundColor: AppStyles.colors.redPrimary,
     borderRadius: 5,
-    marginTop: 5
+    marginTop: 15,
+    elevation: 5
   },
   modal_sub_container: {
     flex: 1,
     paddingHorizontal: 35,
     paddingTop: 35,
     paddingBottom: 10,
-    justifyContent: "flex-start",
+    justifyContent: "center",
     alignItems: "center"
   },
   hide__container: {
@@ -214,8 +217,6 @@ const styles = StyleSheet.create({
     fontFamily: "Overpass-SemiBold"
   },
   add_item__container: {
-    flex: 2,
-    justifyContent: "flex-start",
     alignSelf: "flex-start",
     alignItems: "flex-start",
     flexWrap: "wrap"
@@ -225,7 +226,7 @@ const styles = StyleSheet.create({
     color: AppStyles.colors.redText,
     fontSize: 16,
     fontFamily: "Overpass-SemiBold",
-    margin: 0,
+    marginTop: 70,
     marginBottom: -8,
     padding: 0
   },
@@ -240,7 +241,7 @@ const styles = StyleSheet.create({
     fontWeight: "100",
     textAlignVertical: "top",
     lineHeight: 50,
-    alignSelf: "stretch"
+    maxHeight: 170
   },
   add_item_save__button: {
     alignSelf: "stretch",
