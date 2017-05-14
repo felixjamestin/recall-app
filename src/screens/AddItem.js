@@ -6,7 +6,8 @@ import {
   TextInput,
   StyleSheet,
   BackHandler,
-  Vibration
+  Vibration,
+  Keyboard
 } from "react-native";
 import Modal from "react-native-modalbox";
 import Toast from "react-native-easy-toast";
@@ -76,16 +77,12 @@ class AddItem extends React.Component {
     this.setState({ addItemValue: "" });
   }
 
-  handleClose() {
-    console.log("Modal just closed");
-  }
+  handleClose() {}
 
-  handleOpen() {
-    console.log("Modal just opened Felix");
-  }
+  handleOpen() {}
 
   handleClosingState(state) {
-    console.log("Open/close of the swipeToClose just changed");
+    Keyboard.dismiss();
   }
 
   /*--------------------------------------------------
@@ -99,6 +96,7 @@ class AddItem extends React.Component {
           style={styles.modal}
           isOpen={this.state.isModalVisible}
           swipeToClose={this.state.swipeToClose}
+          swipeThreshold={100}
           onClosed={this.handleClose}
           onOpened={this.handleOpen}
           onClosingState={this.handleClosingState}
@@ -111,6 +109,7 @@ class AddItem extends React.Component {
         >
 
           <View style={styles.modal_sub_container}>
+            {/* TODO: Clean this up (code & styles) /*}
             {/*
               <TouchableHighlight
               style={styles.hide__container}
@@ -157,7 +156,7 @@ class AddItem extends React.Component {
             activeOpacity={1}
             underlayColor={AppStyles.colors.redSecondaryDark}
           >
-            <Text style={styles.add_item_save__title}>Save</Text>
+            <Text style={styles.add_item_save__title}>Save item</Text>
           </TouchableHighlight>
 
         </Modal>
