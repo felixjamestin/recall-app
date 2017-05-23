@@ -9,21 +9,22 @@
 		"devtools": "react-devtools"
 	},
 	"dependencies": {
+		"chroma-js": "^1.3.3",
+		"electron": "^1.6.6",
 		"react": "16.0.0-alpha.6",
 		"react-native": "0.44.0",
-		"electron": "^1.6.6",
 		"react-native-easy-toast": "^1.0.5",
 		"react-native-modal": "^2.3.2",
 		"react-native-modalbox": "^1.3.9",
+		"react-native-swipe-list-view": "^0.4.1",
+		"react-native-swipeable": "^0.4.0",
 		"react-navigation": "^1.0.0-beta.9"
 	},
 	"devDependencies": {
-		"babel-jest": "20.0.0",
-		"babel-preset-react-native": "1.9.1",
-		"jest": "20.0.0",
-		"react-test-renderer": "16.0.0-alpha.6",
 		"babel-cli": "^6.24.1",
+		"babel-jest": "20.0.0",
 		"babel-preset-flow": "^6.23.0",
+		"babel-preset-react-native": "1.9.1",
 		"eslint": "^3.19.0",
 		"eslint-config-prettier": "^1.7.0",
 		"eslint-config-rallycoding": "^3.2.0",
@@ -31,8 +32,10 @@
 		"eslint-plugin-json": "^1.2.0",
 		"eslint-plugin-prettier": "^2.0.1",
 		"eslint-rallycoding": "^1.2.0",
+		"jest": "20.0.0",
 		"prettier": "^1.3.1",
-		"react-devtools": "^2.1.7"
+		"react-devtools": "^2.1.7",
+		"react-test-renderer": "16.0.0-alpha.6"
 	},
 	"jest": {
 		"preset": "react-native"

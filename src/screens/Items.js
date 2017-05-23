@@ -1,7 +1,7 @@
 import React from "react";
 import { View, AsyncStorage, StatusBar } from "react-native";
 import { AddItem, ListItems } from "./Index";
-import AppStyles from "./../components/common/AppStyles";
+import { AppStyles } from "./../components/common/Index";
 
 class Items extends React.Component {
   static navigationOptions = {
@@ -20,6 +20,7 @@ class Items extends React.Component {
     this.getActionEnum = this.getActionEnum.bind(this);
     this.handleItemAddition = this.handleItemAddition.bind(this);
     this.handleShowAddItem = this.handleShowAddItem.bind(this);
+    this.handleItemDeletion = this.handleItemDeletion.bind(this);
   }
 
   /*--------------------------------------------------
@@ -37,6 +38,8 @@ class Items extends React.Component {
       this.doInitialization();
     } else if (action === this.getActionEnum().add) {
       this.doAddition(params);
+    } else if (action === this.getActionEnum().delete) {
+      this.doDeletion(params);
     } else if (action === this.getActionEnum().set) {
       this.doSetParams(params);
     }
@@ -78,6 +81,20 @@ class Items extends React.Component {
     );
   }
 
+  doDeletion(params) {
+    // Delete from array: method 1
+    const rowID = parseInt(params.rowID, 10);
+    const newItems = this.state.items.filter((item, index) => index !== rowID);
+
+    // Delete from array: method 2
+    // const newItems = this.state.items.slice();
+    // newItems.splice(params.rowID, 1);
+
+    this.setState({ items: newItems }, () => {
+      this.storeLocalData();
+    });
+  }
+
   doSetParams(params) {
     this.setState(params);
   }
@@ -86,6 +103,10 @@ class Items extends React.Component {
     if (!value) return;
     this.setStateHandler(this.getActionEnum().add, { addItemValue: value });
     this.setStateHandler(this.getActionEnum().set, { addItemValue: "" });
+  }
+
+  handleItemDeletion(rowID, key) {
+    this.setStateHandler(this.getActionEnum().delete, { rowID, key });
   }
 
   storeLocalData() {
@@ -126,6 +147,7 @@ class Items extends React.Component {
         <ListItems
           items={this.state.items}
           onShowAddItem={this.handleShowAddItem}
+          onItemDelete={this.handleItemDeletion}
         />
         <AddItem
           isVisible={this.state.showAddItem}

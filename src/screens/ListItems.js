@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, Image, ListView, StyleSheet } from "react-native";
-import AddItemsButton from "./../components/AddItemButton";
-import AppStyles from "./../components/common/AppStyles";
+import { AddItemsButton, Row } from "./../components/Index";
+import { AppStyles } from "./../components/common/Index";
 
 class ListItems extends React.Component {
   constructor(props) {
@@ -17,10 +17,9 @@ class ListItems extends React.Component {
       dataSource: dataSource.cloneWithRows([listItems])
     };
 
-    this.bgColorIndex = 0;
-
     // Bindings
     this.handleRenderRow = this.handleRenderRow.bind(this);
+    this.handleShowAddItem = this.handleShowAddItem.bind(this);
   }
 
   /*--------------------------------------------------
@@ -33,33 +32,23 @@ class ListItems extends React.Component {
     }
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    // return this.props.items !== nextProps.items;
+    return true;
+  }
+
   /*--------------------------------------------------
     Helpers & Handlers
   ----------------------------------------------------*/
-  getRandomIntInclusive(min, max) {
-    const minInt = Math.ceil(min);
-    const maxInt = Math.floor(max);
-    return Math.floor(Math.random() * (maxInt - minInt + 1)) + min;
-  }
-
-  getRandomColor() {
-    const colorKeys = Object.keys(AppStyles.rowColors);
-    const colorIndex = this.bgColorIndex % colorKeys.length;
-    this.bgColorIndex++;
-
-    return AppStyles.rowColors[colorKeys[colorIndex]];
-  }
-
   handleRenderRow(rowData, sectionID, rowID, highlightRow) {
-    const bgColor = this.getRandomColor();
-    const dynamicBackground = {
-      backgroundColor: bgColor
-    };
-
     return (
-      <View style={[styles.row, dynamicBackground]}>
-        <Text style={styles.item_title}>{rowData.value}</Text>
-      </View>
+      <Row
+        rowData={rowData}
+        sectionID={sectionID}
+        rowID={rowID}
+        highlightRow={highlightRow}
+        onRowDelete={this.props.onItemDelete}
+      />
     );
   }
 
@@ -70,37 +59,56 @@ class ListItems extends React.Component {
     });
   }
 
+  handleScrollToTop() {
+    if (!this.hasItems()) return;
+    this.refs.listView.scrollTo({ x: 0, y: 0, animated: true });
+  }
+
+  handleShowAddItem() {
+    this.handleScrollToTop();
+    this.props.onShowAddItem(true);
+  }
+
+  hasItems() {
+    return this.props.items.length > 0;
+  }
+
   /*--------------------------------------------------
     Render UI
   ----------------------------------------------------*/
   render() {
-    const hasNoItemsView = (
-      <View style={styles.container}>
-        <View style={styles.no_items_state}>
-          <Image source={require("./../../assets/images/no_items_state.png")} />
-        </View>
-        <AddItemsButton onShowAddItem={this.props.onShowAddItem} />
-      </View>
-    );
-
-    const hasItemsView = (
-      <View style={styles.container}>
-        <ListView
-          style={styles.list_view}
-          dataSource={this.state.dataSource}
-          renderRow={this.handleRenderRow}
-        />
-        <AddItemsButton onShowAddItem={this.props.onShowAddItem} />
-      </View>
-    );
-
-    const finalItemsView = this.props.items.length > 0
-      ? hasItemsView
-      : hasNoItemsView;
+    const finalItemsView = this.hasItems()
+      ? this.renderWhenItems()
+      : this.renderWhenNoItems();
 
     return (
       <View>
         {finalItemsView}
+      </View>
+    );
+  }
+
+  renderWhenNoItems() {
+    return (
+      <View style={styles.container}>
+        <View style={styles.no_items_state}>
+          <Image source={require("./../../assets/images/no_items_state.png")} />
+        </View>
+        <AddItemsButton onShowAddItem={this.handleShowAddItem} />
+      </View>
+    );
+  }
+
+  renderWhenItems() {
+    return (
+      <View style={styles.container}>
+        <ListView
+          ref="listView"
+          style={styles.list_view}
+          dataSource={this.state.dataSource}
+          renderRow={this.handleRenderRow}
+        />
+        <AddItemsButton onShowAddItem={this.handleShowAddItem} />
       </View>
     );
   }
@@ -120,20 +128,6 @@ const styles = StyleSheet.create({
     paddingTop: 5,
     paddingBottom: 250,
     marginTop: 0
-  },
-  row: {
-    borderRadius: 5,
-    paddingHorizontal: 33,
-    paddingTop: 42,
-    paddingBottom: 48,
-    marginVertical: 3,
-    marginHorizontal: 16
-  },
-  item_title: {
-    fontSize: 22,
-    fontFamily: "Overpass-Regular",
-    lineHeight: 34,
-    color: "white"
   },
   no_items_state: {
     flex: 1,

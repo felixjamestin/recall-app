@@ -4,37 +4,35 @@ import {
   TouchableHighlight,
   Image,
   StyleSheet,
-  Animated
+  Animated,
+  Easing
 } from "react-native";
-import AppStyles from "./../components/common/AppStyles";
+import { AppStyles } from "./../components/common/Index";
 
-class addItemsButton extends React.Component {
+class AddItemsButton extends React.Component {
   constructor(props) {
     super(props);
-    this.handlePressIn = this.handlePressIn.bind(this);
-    this.handlePressOut = this.handlePressOut.bind(this);
+    this.animatedValueScaleIn = new Animated.Value(0);
   }
 
   /*--------------------------------------------------
     Lifecycle events
   ----------------------------------------------------*/
-  componentWillMount() {
-    this.animatedValue = new Animated.Value(1);
+  componentDidUpdate(prevProps, prevState) {
+    this.handleScaleIn();
   }
 
   /*--------------------------------------------------
     Helpers & Handlers
   ----------------------------------------------------*/
-  handlePressIn() {
-    Animated.spring(this.animatedValue, {
-      toValue: 0.8
-    }).start();
-  }
-  handlePressOut() {
-    Animated.spring(this.animatedValue, {
+  handleScaleIn() {
+    this.animatedValueScaleIn.setValue(0);
+    Animated.timing(this.animatedValueScaleIn, {
       toValue: 1,
-      friction: 5,
-      tension: 80
+      duration: 300,
+      easing: Easing.elastic(1.2),
+      delay: 1800,
+      useNativeDriver: true
     }).start();
   }
 
@@ -42,14 +40,15 @@ class addItemsButton extends React.Component {
     Render UI
   ----------------------------------------------------*/
   render() {
-    const animatedStyle = {
-      transform: [{ scale: this.animatedValue }]
+    const animatedStyleScaleIn = {
+      transform: [{ scale: this.animatedValueScaleIn }],
+      opacity: this.animatedValueScaleIn
     };
 
     return (
       <View style={styles.show_add_item__container}>
         <Animated.View
-          style={[animatedStyle, styles.show_add_item_sub_container]}
+          style={[styles.show_add_item_sub_container, animatedStyleScaleIn]}
         >
           <TouchableHighlight
             style={styles.show_add_item__button_container}
@@ -58,8 +57,6 @@ class addItemsButton extends React.Component {
             onPress={() => {
               this.props.onShowAddItem(true);
             }}
-            onPressIn={this.handlePressIn}
-            onPressOut={this.handlePressOut}
           >
             <Image
               style={[styles.show_add_item__button]}
@@ -104,4 +101,4 @@ const styles = StyleSheet.create({
 /*---------------------------------------------------
   Exports
 ----------------------------------------------------*/
-export default addItemsButton;
+export { AddItemsButton };

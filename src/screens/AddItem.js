@@ -7,11 +7,18 @@ import {
   StyleSheet,
   BackHandler,
   Vibration,
-  Keyboard
+  Keyboard,
+  Animated
 } from "react-native";
 import Modal from "react-native-modalbox";
 import Toast from "react-native-easy-toast";
-import AppStyles from "./../components/common/AppStyles";
+import Chroma from "chroma-js";
+import { AppStyles, ColorHelper } from "./../components/common/Index";
+
+const AnimatedModal = Animated.createAnimatedComponent(Modal);
+const AnimatedTouchableHighlight = Animated.createAnimatedComponent(
+  TouchableHighlight
+);
 
 class AddItem extends React.Component {
   constructor(props) {
@@ -25,6 +32,8 @@ class AddItem extends React.Component {
       swipeToClose: true
     };
 
+    this.colorAnimatedValue = new Animated.Value(0);
+
     // Bind handlers
     this.handleChange = this.handleChange.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
@@ -32,6 +41,8 @@ class AddItem extends React.Component {
     this.handleSave = this.handleSave.bind(this);
     this.handleModalVisibility = this.handleModalVisibility.bind(this);
     this.handleBackPress = this.handleBackPress.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+    this.handleOpen = this.handleOpen.bind(this);
   }
 
   /*--------------------------------------------------
@@ -65,18 +76,6 @@ class AddItem extends React.Component {
     console.log(`On end editing: ${event.nativeEvent.text}`);
   }
 
-  handleSave(event) {
-    // Pass state to higher-order component
-    this.props.onItemAddition(this.state.addItemValue);
-
-    // Feedback
-    Vibration.vibrate();
-    this.refs.toast.show("Saved!");
-
-    // Set local state
-    this.setState({ addItemValue: "" });
-  }
-
   handleClose() {}
 
   handleOpen() {}
@@ -85,18 +84,83 @@ class AddItem extends React.Component {
     Keyboard.dismiss();
   }
 
+  handleSave(event) {
+    // Pass state to higher-order component
+    this.props.onItemAddition(this.state.addItemValue);
+
+    // Feedback
+    // Vibration.vibrate();
+    this.refs.toast.show("Saved!");
+
+    // Animate background color
+    this.startColorAnimation();
+
+    // Set local state
+    this.setState({ addItemValue: "" });
+  }
+
+  startColorAnimation() {
+    this.colorAnimatedValue.setValue(0);
+
+    Animated.timing(this.colorAnimatedValue, {
+      toValue: 100,
+      duration: 300
+    }).start();
+  }
+
+  getAnimationStyles() {
+    const { currentColor, nextColor } = ColorHelper.getCurrentAndNextColor();
+    const currentColorDark = Chroma(currentColor).darken(1.5).css();
+    const nextColorDark = Chroma(nextColor).darken(1.5).css();
+    const nextColorDarker = Chroma(nextColor).darken(2).css();
+
+    const interpolateColor = this.colorAnimatedValue.interpolate({
+      inputRange: [0, 100],
+      outputRange: [currentColor, nextColor]
+    });
+    const interpolateColorDark = this.colorAnimatedValue.interpolate({
+      inputRange: [0, 100],
+      outputRange: [currentColorDark, nextColorDark]
+    });
+
+    const animatedStyle = {
+      colors: {
+        currentColor,
+        nextColor,
+        nextColorDark,
+        nextColorDarker
+      },
+      modal: {
+        backgroundColor: interpolateColor
+      },
+      add_item__title: {
+        color: interpolateColorDark
+      },
+      add_item_save__button: {
+        backgroundColor: interpolateColorDark
+      },
+      toast_text: {
+        color: nextColorDark
+      }
+    };
+
+    return animatedStyle;
+  }
+
   /*--------------------------------------------------
     Render UI
   ----------------------------------------------------*/
   render() {
+    const animatedStyle = this.getAnimationStyles();
+
     return (
       <View style={styles.container}>
 
-        <Modal
-          style={styles.modal}
+        <AnimatedModal
+          style={[styles.modal, animatedStyle.modal]}
           isOpen={this.state.isModalVisible}
           swipeToClose={this.state.swipeToClose}
-          swipeThreshold={100}
+          swipeThreshold={150}
           onClosed={this.handleClose}
           onOpened={this.handleOpen}
           onClosingState={this.handleClosingState}
@@ -109,24 +173,13 @@ class AddItem extends React.Component {
         >
 
           <View style={styles.modal_sub_container}>
-            {/* TODO: Clean this up (code & styles) /*}
-            {/*
-              <TouchableHighlight
-              style={styles.hide__container}
-              activeOpacity={1}
-              underlayColor="transparent"
-              onPress={() => {
-                this.handleModalVisibility(!this.state.isModalVisible);
-              }}
-            >
-              <Text style={styles.hide__text}>Pull to see items</Text>
-            </TouchableHighlight>
-            */}
 
             <View style={styles.add_item__container}>
-              <Text style={styles.add_item__title}>
+              <Animated.Text
+                style={[styles.add_item__title, animatedStyle.add_item__title]}
+              >
                 Remind me to
-              </Text>
+              </Animated.Text>
 
               <TextInput
                 style={styles.add_item__text}
@@ -150,16 +203,19 @@ class AddItem extends React.Component {
             </View>
           </View>
 
-          <TouchableHighlight
-            style={styles.add_item_save__button}
+          <AnimatedTouchableHighlight
+            style={[
+              styles.add_item_save__button,
+              animatedStyle.add_item_save__button
+            ]}
             onPress={this.handleSave}
             activeOpacity={1}
-            underlayColor={AppStyles.colors.redSecondaryDark}
+            underlayColor={animatedStyle.colors.nextColorDarker}
           >
             <Text style={styles.add_item_save__title}>Save item</Text>
-          </TouchableHighlight>
+          </AnimatedTouchableHighlight>
 
-        </Modal>
+        </AnimatedModal>
 
         <Toast
           ref="toast"
@@ -205,16 +261,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center"
   },
-  hide__container: {
-    flex: 1.1,
-    alignSelf: "center",
-    marginTop: 0
-  },
-  hide__text: {
-    color: AppStyles.colors.redText,
-    fontSize: 9,
-    fontFamily: "Overpass-SemiBold"
-  },
   add_item__container: {
     alignSelf: "flex-start",
     alignItems: "flex-start",
@@ -222,7 +268,7 @@ const styles = StyleSheet.create({
   },
   add_item__title: {
     flex: 0,
-    color: AppStyles.colors.redText,
+    color: Chroma(AppStyles.colors.redPrimary).darken(1.5),
     fontSize: 16,
     fontFamily: "Overpass-SemiBold",
     marginTop: 70,
@@ -256,14 +302,15 @@ const styles = StyleSheet.create({
     fontFamily: "Overpass-SemiBold"
   },
   toast: {
-    backgroundColor: AppStyles.colors.redPrimary,
-    alignSelf: "flex-start",
+    backgroundColor: "transparent",
+    alignSelf: "flex-end",
     marginLeft: 25,
     paddingRight: 60
   },
   toast_text: {
-    color: AppStyles.colors.redText,
-    fontSize: 16
+    color: "rgba(0,0,0,.5)",
+    fontSize: 14,
+    fontFamily: "Overpass-SemiBold"
   }
 });
 

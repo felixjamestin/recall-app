@@ -7,6 +7,7 @@ const AppStyles = {
     redPrimary: "#E50F2E"
   },
   rowColors: {
+    red: "#E50F2E",
     violet: "#774CC5",
     magenta: "#E51F58",
     // green: "#60A416",
@@ -14,4 +15,4 @@ const AppStyles = {
   }
 };
 
-export default AppStyles;
+export { AppStyles };
