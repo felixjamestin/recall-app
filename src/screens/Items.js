@@ -1,7 +1,7 @@
 import React from "react";
 import { View, AsyncStorage, StatusBar } from "react-native";
 import { AddItem, ListItems } from "./Index";
-import { AppStyles } from "./../components/common/Index";
+import { AppStyles, ArrayHelper } from "./../components/common/Index";
 
 class Items extends React.Component {
   static navigationOptions = {
@@ -19,8 +19,10 @@ class Items extends React.Component {
     this.setStateHandler = this.setStateHandler.bind(this);
     this.getActionEnum = this.getActionEnum.bind(this);
     this.handleItemAddition = this.handleItemAddition.bind(this);
-    this.handleShowAddItem = this.handleShowAddItem.bind(this);
     this.handleItemDeletion = this.handleItemDeletion.bind(this);
+    this.handleShowAddItem = this.handleShowAddItem.bind(this);
+    this.handleCloseAddItem = this.handleCloseAddItem.bind(this);
+    this.handleStopAnimation = this.handleStopAnimation.bind(this);
   }
 
   /*--------------------------------------------------
@@ -58,7 +60,8 @@ class Items extends React.Component {
   doInitialization() {
     this.state = {
       items: [],
-      showAddItem: true
+      showAddItem: true,
+      animateAddButton: true
     };
     this.fetchLocalData();
   }
@@ -82,13 +85,10 @@ class Items extends React.Component {
   }
 
   doDeletion(params) {
-    // Delete from array: method 1
-    const rowID = parseInt(params.rowID, 10);
-    const newItems = this.state.items.filter((item, index) => index !== rowID);
-
-    // Delete from array: method 2
-    // const newItems = this.state.items.slice();
-    // newItems.splice(params.rowID, 1);
+    const newItems = ArrayHelper.removeUsingIndex(
+      this.state.items,
+      params.rowID
+    );
 
     this.setState({ items: newItems }, () => {
       this.storeLocalData();
@@ -126,10 +126,24 @@ class Items extends React.Component {
     });
   }
 
-  handleShowAddItem(showAddItem) {
-    const shouldShowAddItem = showAddItem;
+  handleShowAddItem() {
     this.setStateHandler(this.getActionEnum().set, {
-      showAddItem: shouldShowAddItem
+      showAddItem: true
+    });
+  }
+
+  handleCloseAddItem() {
+    this.setStateHandler(this.getActionEnum().set, {
+      showAddItem: false,
+      animateAddButton: true
+    });
+  }
+
+  handleStopAnimation() {
+    this.state.animateAddButton = false;
+    // TODO: Move logic for setting state w/o triggering a render to setStateHandler
+    this.setStateHandler(this.getActionEnum().set, {
+      animateAddButton: false
     });
   }
 
@@ -146,12 +160,16 @@ class Items extends React.Component {
         />
         <ListItems
           items={this.state.items}
+          isAddItemVisible={this.state.showAddItem}
+          shouldAnimateAddButton={this.state.animateAddButton}
           onShowAddItem={this.handleShowAddItem}
           onItemDelete={this.handleItemDeletion}
+          onAddButtonAnimationComplete={this.handleStopAnimation}
         />
         <AddItem
           isVisible={this.state.showAddItem}
           onItemAddition={this.handleItemAddition}
+          onClose={this.handleCloseAddItem}
         />
       </View>
     );

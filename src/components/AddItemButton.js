@@ -7,7 +7,6 @@ import {
   Animated,
   Easing
 } from "react-native";
-import { AppStyles } from "./../components/common/Index";
 
 class AddItemsButton extends React.Component {
   constructor(props) {
@@ -26,6 +25,8 @@ class AddItemsButton extends React.Component {
     Helpers & Handlers
   ----------------------------------------------------*/
   handleScaleIn() {
+    if (this.props.shouldAnimateAddButton !== true) return;
+
     this.animatedValueScaleIn.setValue(0);
     Animated.timing(this.animatedValueScaleIn, {
       toValue: 1,
@@ -34,6 +35,8 @@ class AddItemsButton extends React.Component {
       delay: 1800,
       useNativeDriver: true
     }).start();
+
+    this.props.onAddButtonAnimationComplete();
   }
 
   /*--------------------------------------------------

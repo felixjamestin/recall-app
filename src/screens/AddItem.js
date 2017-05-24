@@ -27,7 +27,6 @@ class AddItem extends React.Component {
     // Initialize state
     this.state = {
       addItemValue: "",
-      isModalVisible: this.props.isVisible,
       isDisabled: false,
       swipeToClose: true
     };
@@ -69,14 +68,16 @@ class AddItem extends React.Component {
   }
 
   handleBlur(value) {
-    console.log("Blur was fired");
+    // console.log("Blur was fired");
   }
 
   handleEndEditing(event) {
-    console.log(`On end editing: ${event.nativeEvent.text}`);
+    // console.log(`On end editing: ${event.nativeEvent.text}`);
   }
 
-  handleClose() {}
+  handleClose() {
+    this.props.onClose();
+  }
 
   handleOpen() {}
 
@@ -158,7 +159,7 @@ class AddItem extends React.Component {
 
         <AnimatedModal
           style={[styles.modal, animatedStyle.modal]}
-          isOpen={this.state.isModalVisible}
+          isOpen={this.props.isVisible}
           swipeToClose={this.state.swipeToClose}
           swipeThreshold={150}
           onClosed={this.handleClose}

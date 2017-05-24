@@ -20,6 +20,7 @@ class ListItems extends React.Component {
     // Bindings
     this.handleRenderRow = this.handleRenderRow.bind(this);
     this.handleShowAddItem = this.handleShowAddItem.bind(this);
+    this.handleShouldScaleInRow = this.handleShouldScaleInRow.bind(this);
   }
 
   /*--------------------------------------------------
@@ -48,6 +49,8 @@ class ListItems extends React.Component {
         rowID={rowID}
         highlightRow={highlightRow}
         onRowDelete={this.props.onItemDelete}
+        onScaleInRowCheck={this.handleShouldScaleInRow}
+        isAddItemVisible={this.props.isAddItemVisible}
       />
     );
   }
@@ -66,11 +69,16 @@ class ListItems extends React.Component {
 
   handleShowAddItem() {
     this.handleScrollToTop();
-    this.props.onShowAddItem(true);
+    this.props.onShowAddItem();
   }
 
   hasItems() {
     return this.props.items.length > 0;
+  }
+
+  handleShouldScaleInRow() {
+    if (this.props.isAddItemVisible) return true;
+    return false;
   }
 
   /*--------------------------------------------------
@@ -94,7 +102,11 @@ class ListItems extends React.Component {
         <View style={styles.no_items_state}>
           <Image source={require("./../../assets/images/no_items_state.png")} />
         </View>
-        <AddItemsButton onShowAddItem={this.handleShowAddItem} />
+        <AddItemsButton
+          onShowAddItem={this.handleShowAddItem}
+          shouldAnimateAddButton={this.props.shouldAnimateAddButton}
+          onAddButtonAnimationComplete={this.props.onAddButtonAnimationComplete}
+        />
       </View>
     );
   }
@@ -108,7 +120,11 @@ class ListItems extends React.Component {
           dataSource={this.state.dataSource}
           renderRow={this.handleRenderRow}
         />
-        <AddItemsButton onShowAddItem={this.handleShowAddItem} />
+        <AddItemsButton
+          onShowAddItem={this.handleShowAddItem}
+          shouldAnimateAddButton={this.props.shouldAnimateAddButton}
+          onAddButtonAnimationComplete={this.props.onAddButtonAnimationComplete}
+        />
       </View>
     );
   }

@@ -36,7 +36,7 @@ class Row extends React.Component {
     Helpers & Handlers
   ----------------------------------------------------*/
   handleScaleInFirstRow(rowID) {
-    if (rowID !== "0") return;
+    if (rowID !== "0" || this.props.onScaleInRowCheck() === false) return;
 
     this.animatedValueScaleIn.setValue(0);
     Animated.spring(this.animatedValueScaleIn, {
@@ -69,7 +69,7 @@ class Row extends React.Component {
   }
 
   /*--------------------------------------------------
-    Render
+    Render UI
   ----------------------------------------------------*/
   render() {
     return (
