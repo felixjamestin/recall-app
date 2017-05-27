@@ -1,7 +1,11 @@
 import React from "react";
 import { View, AsyncStorage, StatusBar } from "react-native";
 import { AddItem, ListItems } from "./Index";
-import { AppStyles, ArrayHelper } from "./../components/common/Index";
+import {
+  AppStyles,
+  ArrayHelper,
+  ColorHelper
+} from "./../components/common/Index";
 
 class Items extends React.Component {
   static navigationOptions = {
@@ -22,15 +26,17 @@ class Items extends React.Component {
     this.handleItemDeletion = this.handleItemDeletion.bind(this);
     this.handleShowAddItem = this.handleShowAddItem.bind(this);
     this.handleCloseAddItem = this.handleCloseAddItem.bind(this);
-    this.handleStopAnimation = this.handleStopAnimation.bind(this);
+    this.handleStopAddButtonAnimation = this.handleStopAddButtonAnimation.bind(
+      this
+    );
+    this.handleStopRowAnimation = this.handleStopRowAnimation.bind(this);
+    this.setupColorIndex = this.setupColorIndex.bind(this);
   }
 
   /*--------------------------------------------------
     Lifecycle events
   ----------------------------------------------------*/
-  componentWillMount() {
-    // this.fetchLocalData();
-  }
+  componentWillMount() {}
 
   /*--------------------------------------------------
     Helpers & Handlers
@@ -70,7 +76,11 @@ class Items extends React.Component {
     const newItems = [
       {
         key: Date.now(),
-        value: params.addItemValue
+        value: params.addItemValue,
+        creationTimestamp: new Date(),
+        bgColor: ColorHelper.getColorForRow(),
+        contentType: "text",
+        alarms: []
       },
       ...this.state.items
     ];
@@ -102,7 +112,10 @@ class Items extends React.Component {
   handleItemAddition(value) {
     if (!value) return;
     this.setStateHandler(this.getActionEnum().add, { addItemValue: value });
-    this.setStateHandler(this.getActionEnum().set, { addItemValue: "" });
+    this.setStateHandler(this.getActionEnum().set, {
+      addItemValue: "",
+      animateRow: true
+    });
   }
 
   handleItemDeletion(rowID, key) {
@@ -118,7 +131,15 @@ class Items extends React.Component {
       try {
         if (json) {
           const items = JSON.parse(json);
-          this.setStateHandler(this.getActionEnum().set, { items });
+          // this.setStateHandler(this.getActionEnum().set, { items });
+          this.setState(
+            {
+              items
+            },
+            () => {
+              this.setupColorIndex();
+            }
+          );
         }
       } catch (e) {
         console.log(e);
@@ -139,12 +160,26 @@ class Items extends React.Component {
     });
   }
 
-  handleStopAnimation() {
-    this.state.animateAddButton = false;
-    // TODO: Move logic for setting state w/o triggering a render to setStateHandler
+  handleStopAddButtonAnimation() {
     this.setStateHandler(this.getActionEnum().set, {
       animateAddButton: false
     });
+  }
+
+  handleStopRowAnimation() {
+    this.state.animateRow = false;
+  }
+
+  setupColorIndex() {
+    // Determine background color to start with based on saved items
+    const latestItem = this.state.items[0];
+    const rowColors = Object.values(AppStyles.rowColors);
+    const relativeIndexInColorArray = rowColors.findIndex(
+      value => value === latestItem.bgColor
+    );
+    const newColorIndex = (relativeIndexInColorArray + 1) % rowColors.length;
+
+    ColorHelper.setColorIndex(newColorIndex);
   }
 
   /*--------------------------------------------------
@@ -161,10 +196,12 @@ class Items extends React.Component {
         <ListItems
           items={this.state.items}
           isAddItemVisible={this.state.showAddItem}
+          shouldAnimateRow={this.state.animateRow}
           shouldAnimateAddButton={this.state.animateAddButton}
           onShowAddItem={this.handleShowAddItem}
           onItemDelete={this.handleItemDeletion}
-          onAddButtonAnimationComplete={this.handleStopAnimation}
+          onAnimateAddButtonComplete={this.handleStopAddButtonAnimation}
+          onAnimateRowComplete={this.handleStopRowAnimation}
         />
         <AddItem
           isVisible={this.state.showAddItem}

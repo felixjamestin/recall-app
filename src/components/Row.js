@@ -1,14 +1,7 @@
 import React from "react";
-import {
-  View,
-  Text,
-  TouchableHighlight,
-  StyleSheet,
-  Animated,
-  Easing
-} from "react-native";
+import { View, Text, StyleSheet, Animated } from "react-native";
 import Swipeable from "react-native-swipeable";
-import { AppStyles, ColorHelper } from "./../components/common/Index";
+import { AppStyles } from "./../components/common/Index";
 
 class Row extends React.Component {
   constructor(props) {
@@ -47,6 +40,8 @@ class Row extends React.Component {
       delay: 0,
       useNativeDriver: true
     }).start();
+
+    this.props.onAnimateRowComplete();
   }
 
   handleDeleteRow() {
@@ -55,7 +50,7 @@ class Row extends React.Component {
 
   getDynamicStylesForRow() {
     return {
-      backgroundColor: ColorHelper.getColorForRow(),
+      backgroundColor: this.props.rowData.bgColor,
       opacity: this.animatedValueScaleIn,
       transform: [
         {
@@ -75,9 +70,9 @@ class Row extends React.Component {
     return (
       <Swipeable
         leftContent={this.renderDeleteAction("left")}
-        leftActionActivationDistance={175}
+        leftActionActivationDistance={100}
         rightContent={this.renderDeleteAction("right")}
-        rightActionActivationDistance={175}
+        rightActionActivationDistance={100}
         onLeftActionActivate={() =>
           this.setState({ wasDeleteActionActivated: true })}
         onLeftActionDeactivate={() =>
@@ -89,9 +84,11 @@ class Row extends React.Component {
           this.setState({ wasDeleteActionActivated: false })}
         onRightActionComplete={() => this.handleDeleteRow()}
       >
+
         <Animated.View style={[styles.row, this.getDynamicStylesForRow()]}>
           <Text style={styles.item_title}>{this.props.rowData.value}</Text>
         </Animated.View>
+
       </Swipeable>
     );
   }
@@ -107,8 +104,8 @@ class Row extends React.Component {
           styles.row_action_full_swipe,
           {
             backgroundColor: this.state.wasDeleteActionActivated
-              ? "red"
-              : "green"
+              ? AppStyles.colors.red
+              : AppStyles.colors.green
           }
         ]}
       >
@@ -136,6 +133,7 @@ const styles = StyleSheet.create({
     marginVertical: 3,
     marginHorizontal: 16,
     minHeight: 125
+    // backgroundColor: this.props.rowData.bgColor
   },
   item_title: {
     fontSize: 22,

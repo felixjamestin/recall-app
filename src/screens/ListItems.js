@@ -50,7 +50,7 @@ class ListItems extends React.Component {
         highlightRow={highlightRow}
         onRowDelete={this.props.onItemDelete}
         onScaleInRowCheck={this.handleShouldScaleInRow}
-        isAddItemVisible={this.props.isAddItemVisible}
+        onAnimateRowComplete={this.props.onAnimateRowComplete}
       />
     );
   }
@@ -77,7 +77,8 @@ class ListItems extends React.Component {
   }
 
   handleShouldScaleInRow() {
-    if (this.props.isAddItemVisible) return true;
+    // if (this.props.isAddItemVisible) return true;
+    if (this.props.isAddItemVisible && this.props.shouldAnimateRow) return true;
     return false;
   }
 
@@ -103,9 +104,10 @@ class ListItems extends React.Component {
           <Image source={require("./../../assets/images/no_items_state.png")} />
         </View>
         <AddItemsButton
+          isAddItemVisible={this.props.isAddItemVisible}
           onShowAddItem={this.handleShowAddItem}
           shouldAnimateAddButton={this.props.shouldAnimateAddButton}
-          onAddButtonAnimationComplete={this.props.onAddButtonAnimationComplete}
+          onAnimateAddButtonComplete={this.props.onAnimateAddButtonComplete}
         />
       </View>
     );
@@ -121,9 +123,10 @@ class ListItems extends React.Component {
           renderRow={this.handleRenderRow}
         />
         <AddItemsButton
+          isAddItemVisible={this.props.isAddItemVisible}
           onShowAddItem={this.handleShowAddItem}
           shouldAnimateAddButton={this.props.shouldAnimateAddButton}
-          onAddButtonAnimationComplete={this.props.onAddButtonAnimationComplete}
+          onAnimateAddButtonComplete={this.props.onAnimateAddButtonComplete}
         />
       </View>
     );

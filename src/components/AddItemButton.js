@@ -32,26 +32,35 @@ class AddItemsButton extends React.Component {
       toValue: 1,
       duration: 300,
       easing: Easing.elastic(1.2),
-      delay: 1800,
-      useNativeDriver: true
+      delay: 0
+      // useNativeDriver: true
     }).start();
 
-    this.props.onAddButtonAnimationComplete();
+    this.props.onAnimateAddButtonComplete();
+  }
+
+  getDynamicStyles() {
+    const dynamicOpacity = this.props.isAddItemVisible === true ? 0 : 1;
+
+    const animatedStyleScaleIn = {
+      transform: [{ scale: this.animatedValueScaleIn }],
+      opacity: this.animatedValueScaleIn
+    };
+
+    return [animatedStyleScaleIn, { opacity: dynamicOpacity }];
   }
 
   /*--------------------------------------------------
     Render UI
   ----------------------------------------------------*/
   render() {
-    const animatedStyleScaleIn = {
-      transform: [{ scale: this.animatedValueScaleIn }],
-      opacity: this.animatedValueScaleIn
-    };
-
     return (
       <View style={styles.show_add_item__container}>
         <Animated.View
-          style={[styles.show_add_item_sub_container, animatedStyleScaleIn]}
+          style={[
+            styles.show_add_item_sub_container,
+            ...this.getDynamicStyles()
+          ]}
         >
           <TouchableHighlight
             style={styles.show_add_item__button_container}

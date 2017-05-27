@@ -3,6 +3,10 @@ import { AppStyles } from "./Index";
 export class ColorHelper {
   static bgColorIndex = 0;
 
+  static setColorIndex(newIndex) {
+    ColorHelper.bgColorIndex = newIndex;
+  }
+
   static getCurrentAndNextColor() {
     const colorKeys = Object.keys(AppStyles.rowColors);
     const currentColorIndex = ColorHelper.bgColorIndex % colorKeys.length;
