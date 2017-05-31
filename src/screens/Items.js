@@ -1,6 +1,7 @@
 import React from "react";
 import { View, AsyncStorage, StatusBar } from "react-native";
 import { AddItem, ListItems } from "./Index";
+import { Item } from "./../components/Index";
 import {
   AppStyles,
   ArrayHelper,

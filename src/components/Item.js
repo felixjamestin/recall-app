@@ -1,12 +1,13 @@
-import ColorHelper from "./../components/common/ColorHelper";
+import React from "react";
+import ColorHelper from "./common/Index";
 
-export default class Item {
-  constructor(value, contentType = "text") {
+export class Item {
+  constructor(value) {
     this.key = Date.now();
     this.value = value;
     this.creationTimestamp = new Date();
     this.bgColor = ColorHelper.getColorForRow();
-    this.contentType = contentType;
+    this.contentType = "text";
     this.alarms = [];
   }
 

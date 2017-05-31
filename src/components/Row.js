@@ -1,9 +1,9 @@
 import React from "react";
-import { View, Text, StyleSheet, Animated } from "react-native";
+import { View, Text, StyleSheet, Animated, Easing } from "react-native";
 import Swipeable from "react-native-swipeable";
 import { AppStyles } from "./../components/common/Index";
 
-class Row extends React.Component {
+class Row extends React.PureComponent {
   constructor(props) {
     super(props);
 
@@ -12,46 +12,33 @@ class Row extends React.Component {
       wasDeleteActionActivated: false
     };
     this.animatedValueScaleIn = new Animated.Value(1);
+    this.animatedValueHeight = new Animated.Value(1);
 
     // Bindings
     this.handleDeleteRow = this.handleDeleteRow.bind(this);
     this.getDynamicStylesForRow = this.getDynamicStylesForRow.bind(this);
+    this.determineRowHeight = this.determineRowHeight.bind(this);
   }
 
   /*--------------------------------------------------
     Lifecycle events
   ----------------------------------------------------*/
   componentDidUpdate(prevProps, prevState) {
-    this.handleScaleInFirstRow(prevProps.rowID);
+    // this.animatedValueHeight.setValue(this.state.rowHeight);
+    this.handleAddAnimation(prevProps.rowID);
   }
 
   /*--------------------------------------------------
     Helpers & Handlers
   ----------------------------------------------------*/
-  handleScaleInFirstRow(rowID) {
-    if (rowID !== "0" || this.props.onScaleInRowCheck() === false) return;
-
-    this.animatedValueScaleIn.setValue(0);
-    Animated.spring(this.animatedValueScaleIn, {
-      toValue: 1,
-      duration: 100,
-      friction: 4,
-      tension: 40,
-      delay: 0,
-      useNativeDriver: true
-    }).start();
-
-    this.props.onAnimateRowComplete();
-  }
-
-  handleDeleteRow() {
-    this.props.onRowDelete(this.props.rowID, this.props.rowData.key);
-  }
-
   getDynamicStylesForRow() {
     return {
       backgroundColor: this.props.rowData.bgColor,
-      opacity: this.animatedValueScaleIn,
+      // height: this.animatedValueHeight, //TODO:
+      opacity: this.animatedValueHeight.interpolate({
+        inputRange: [0, 1],
+        outputRange: [0, 1]
+      }),
       transform: [
         {
           translateY: this.animatedValueScaleIn.interpolate({
@@ -61,6 +48,42 @@ class Row extends React.Component {
         }
       ]
     };
+  }
+
+  handleAddAnimation(rowID) {
+    if (rowID !== "0" || this.props.onScaleInRowCheck() === false) return;
+
+    this.animatedValueScaleIn.setValue(0);
+    Animated.spring(this.animatedValueScaleIn, {
+      toValue: 1,
+      duration: 100,
+      friction: 4,
+      tension: 40,
+      delay: 0,
+      useNativeDriver: false
+    }).start();
+
+    this.props.onAnimateRowComplete();
+  }
+
+  handleDeleteRow() {
+    this.handleDeleteAnimation(({ finished }) => {
+      this.props.onRowDelete(this.props.rowID, this.props.rowData.key);
+    });
+  }
+
+  handleDeleteAnimation(onDeleteAnimationComplete) {
+    Animated.timing(this.animatedValueHeight, {
+      toValue: 0,
+      duration: 100,
+      easing: Easing.linear,
+      delay: 0,
+      useNativeDriver: false
+    }).start(onDeleteAnimationComplete);
+  }
+
+  determineRowHeight(event) {
+    this.setState({ rowHeight: Math.floor(event.nativeEvent.layout.height) });
   }
 
   /*--------------------------------------------------
@@ -85,7 +108,10 @@ class Row extends React.Component {
         onRightActionComplete={() => this.handleDeleteRow()}
       >
 
-        <Animated.View style={[styles.row, this.getDynamicStylesForRow()]}>
+        <Animated.View
+          style={[styles.row, this.getDynamicStylesForRow()]}
+          onLayout={this.determineRowHeight}
+        >
           <Text style={styles.item_title}>{this.props.rowData.value}</Text>
         </Animated.View>
 
@@ -133,7 +159,6 @@ const styles = StyleSheet.create({
     marginVertical: 3,
     marginHorizontal: 16,
     minHeight: 125
-    // backgroundColor: this.props.rowData.bgColor
   },
   item_title: {
     fontSize: 22,
