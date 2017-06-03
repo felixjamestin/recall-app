@@ -78,6 +78,7 @@ class Items extends React.Component {
       {
         key: Date.now(),
         value: params.addItemValue,
+        selected: false,
         creationTimestamp: new Date(),
         bgColor: ColorHelper.getColorForRow(),
         contentType: "text",

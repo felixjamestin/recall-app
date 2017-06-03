@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, Animated, Easing } from "react-native";
 import Swipeable from "react-native-swipeable";
 import { AppStyles } from "./../components/common/Index";
 
+const AnimatedSwipeable = Animated.createAnimatedComponent(Swipeable);
+
 class Row extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -16,7 +18,6 @@ class Row extends React.PureComponent {
 
     // Bindings
     this.handleDeleteRow = this.handleDeleteRow.bind(this);
-    this.getDynamicStylesForRow = this.getDynamicStylesForRow.bind(this);
     this.determineRowHeight = this.determineRowHeight.bind(this);
   }
 
@@ -24,32 +25,12 @@ class Row extends React.PureComponent {
     Lifecycle events
   ----------------------------------------------------*/
   componentDidUpdate(prevProps, prevState) {
-    // this.animatedValueHeight.setValue(this.state.rowHeight);
     this.handleAddAnimation(prevProps.rowID);
   }
 
   /*--------------------------------------------------
     Helpers & Handlers
   ----------------------------------------------------*/
-  getDynamicStylesForRow() {
-    return {
-      backgroundColor: this.props.rowData.bgColor,
-      // height: this.animatedValueHeight, //TODO:
-      opacity: this.animatedValueHeight.interpolate({
-        inputRange: [0, 1],
-        outputRange: [0, 1]
-      }),
-      transform: [
-        {
-          translateY: this.animatedValueScaleIn.interpolate({
-            inputRange: [0, 1],
-            outputRange: [-10, 0]
-          })
-        }
-      ]
-    };
-  }
-
   handleAddAnimation(rowID) {
     if (rowID !== "0" || this.props.onScaleInRowCheck() === false) return;
 
@@ -68,18 +49,22 @@ class Row extends React.PureComponent {
 
   handleDeleteRow() {
     this.handleDeleteAnimation(({ finished }) => {
-      this.props.onRowDelete(this.props.rowID, this.props.rowData.key);
+      // this.props.onRowDelete(this.props.rowID, this.props.rowData.key);
+      // setTimeout(() => {
+      //   console.log("Hello");
+      //   alert("Hi");
+      // }, 1000);
     });
   }
 
   handleDeleteAnimation(onDeleteAnimationComplete) {
     Animated.timing(this.animatedValueHeight, {
       toValue: 0,
-      duration: 100,
-      easing: Easing.linear,
+      duration: 200,
+      easing: Easing.ease,
       delay: 0,
       useNativeDriver: false
-    }).start(onDeleteAnimationComplete);
+    }).start(onDeleteAnimationComplete); //TODO: Call onDeleteAnimationComplete
   }
 
   determineRowHeight(event) {
@@ -91,7 +76,14 @@ class Row extends React.PureComponent {
   ----------------------------------------------------*/
   render() {
     return (
-      <Swipeable
+      <AnimatedSwipeable
+        style={{
+          opacity: this.animatedValueHeight,
+          height: this.animatedValueHeight.interpolate({
+            inputRange: [0, 1],
+            outputRange: [0, this.state.rowHeight + 5]
+          })
+        }}
         leftContent={this.renderDeleteAction("left")}
         leftActionActivationDistance={100}
         rightContent={this.renderDeleteAction("right")}
@@ -109,13 +101,26 @@ class Row extends React.PureComponent {
       >
 
         <Animated.View
-          style={[styles.row, this.getDynamicStylesForRow()]}
+          style={[
+            styles.row,
+            {
+              backgroundColor: this.props.rowData.bgColor,
+              transform: [
+                {
+                  translateY: this.animatedValueScaleIn.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [-10, 0]
+                  })
+                }
+              ]
+            }
+          ]}
           onLayout={this.determineRowHeight}
         >
           <Text style={styles.item_title}>{this.props.rowData.value}</Text>
         </Animated.View>
 
-      </Swipeable>
+      </AnimatedSwipeable>
     );
   }
 
