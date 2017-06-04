@@ -37,7 +37,9 @@ class Items extends React.Component {
   /*--------------------------------------------------
     Lifecycle events
   ----------------------------------------------------*/
-  componentWillMount() {}
+  componentWillUpdate(nextProps, nextState) {
+    this.checkAndDeleteItemFromStore(nextProps, nextState);
+  }
 
   /*--------------------------------------------------
     Helpers & Handlers
@@ -68,7 +70,8 @@ class Items extends React.Component {
     this.state = {
       items: [],
       showAddItem: true,
-      animateAddButton: true
+      animateAddButton: true,
+      rowToDelete: null
     };
     this.fetchLocalData();
   }
@@ -97,14 +100,7 @@ class Items extends React.Component {
   }
 
   doDeletion(params) {
-    const newItems = ArrayHelper.removeUsingIndex(
-      this.state.items,
-      params.rowID
-    );
-
-    this.setState({ items: newItems }, () => {
-      this.storeLocalData();
-    });
+    this.setState({ rowToDelete: params.rowID });
   }
 
   doSetParams(params) {
@@ -124,6 +120,19 @@ class Items extends React.Component {
     this.setStateHandler(this.getActionEnum().delete, { rowID, key });
   }
 
+  checkAndDeleteItemFromStore(nextProps, nextState) {
+    if (nextState.rowToDelete === null) return;
+
+    const newItems = ArrayHelper.removeUsingIndex(
+      this.state.items,
+      nextState.rowToDelete
+    );
+
+    this.state.rowToDelete = null;
+    this.state.items = newItems; //TODO: Maintain as simple local data, not state
+    this.storeLocalData();
+  }
+
   storeLocalData() {
     AsyncStorage.setItem("items", JSON.stringify(this.state.items));
   }
@@ -133,7 +142,6 @@ class Items extends React.Component {
       try {
         if (json) {
           const items = JSON.parse(json);
-          // this.setStateHandler(this.getActionEnum().set, { items });
           this.setState(
             {
               items

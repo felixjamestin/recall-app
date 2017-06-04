@@ -43,7 +43,15 @@ class AddItemsButton extends React.Component {
     const dynamicOpacity = this.props.isAddItemVisible === true ? 0 : 1;
 
     const animatedStyleScaleIn = {
-      transform: [{ scale: this.animatedValueScaleIn }],
+      transform: [
+        // { scale: this.animatedValueScaleIn },
+        {
+          translateY: this.animatedValueScaleIn.interpolate({
+            inputRange: [0, 1],
+            outputRange: [100, 0]
+          })
+        }
+      ],
       opacity: this.animatedValueScaleIn
     };
 

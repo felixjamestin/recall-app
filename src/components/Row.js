@@ -19,6 +19,7 @@ class Row extends React.PureComponent {
     // Bindings
     this.handleDeleteRow = this.handleDeleteRow.bind(this);
     this.determineRowHeight = this.determineRowHeight.bind(this);
+    this.getDynamicStylesForTitle = this.getDynamicStylesForTitle.bind(this);
   }
 
   /*--------------------------------------------------
@@ -49,11 +50,7 @@ class Row extends React.PureComponent {
 
   handleDeleteRow() {
     this.handleDeleteAnimation(({ finished }) => {
-      // this.props.onRowDelete(this.props.rowID, this.props.rowData.key);
-      // setTimeout(() => {
-      //   console.log("Hello");
-      //   alert("Hi");
-      // }, 1000);
+      this.props.onRowDelete(this.props.rowID, this.props.rowData.key);
     });
   }
 
@@ -64,11 +61,24 @@ class Row extends React.PureComponent {
       easing: Easing.ease,
       delay: 0,
       useNativeDriver: false
-    }).start(onDeleteAnimationComplete); //TODO: Call onDeleteAnimationComplete
+    }).start(onDeleteAnimationComplete);
   }
 
   determineRowHeight(event) {
     this.setState({ rowHeight: Math.floor(event.nativeEvent.layout.height) });
+  }
+
+  getDynamicStylesForTitle(text) {
+    let titleStyle = styles.item_title_large;
+
+    const textLength = text.length;
+    if (textLength > 55) {
+      titleStyle = styles.item_title_small;
+    } else if (textLength > 40) {
+      titleStyle = styles.item_title_medium;
+    }
+
+    return titleStyle;
   }
 
   /*--------------------------------------------------
@@ -117,7 +127,14 @@ class Row extends React.PureComponent {
           ]}
           onLayout={this.determineRowHeight}
         >
-          <Text style={styles.item_title}>{this.props.rowData.value}</Text>
+          <Text
+            style={[
+              styles.item_title_base,
+              this.getDynamicStylesForTitle(this.props.rowData.value)
+            ]}
+          >
+            {this.props.rowData.value}
+          </Text>
         </Animated.View>
 
       </AnimatedSwipeable>
@@ -165,11 +182,23 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     minHeight: 125
   },
-  item_title: {
-    fontSize: 22,
+  item_title_base: {
     fontFamily: "Overpass-Regular",
-    lineHeight: 34,
     color: "white"
+  },
+  item_title_large: {
+    fontSize: 22,
+    lineHeight: 34
+  },
+  item_title_medium: {
+    fontSize: 16,
+    lineHeight: 28,
+    paddingRight: 30
+  },
+  item_title_small: {
+    fontSize: 16,
+    lineHeight: 28,
+    paddingRight: 40
   },
   row_action_button: {
     backgroundColor: AppStyles.colors.redSecondary,
