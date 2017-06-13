@@ -1,6 +1,7 @@
 const AppStyles = {
   colors: {
-    redBackground: "#290000",
+    redBackground: "#330C2F",
+    // redBackground: "#290000",
     redText: "#81000F",
     redSecondaryDark: "#8A061A",
     redSecondary: "#A3071E",
@@ -12,8 +13,11 @@ const AppStyles = {
     red: "#E50F2E",
     violet: "#774CC5",
     magenta: "#E51F58",
-    purple: "#7E4287"
-    // green: "#60A416",
+    turquoise: "#4BA3D3"
+    // blue: "#3066BE",
+    // pink: "#9D44B5"
+    // yellow: "#F9DC5C"
+    // green: "#44AF59"
   }
 };
 

@@ -5,8 +5,6 @@ import {
   TouchableHighlight,
   TextInput,
   StyleSheet,
-  BackHandler,
-  Vibration,
   Keyboard,
   Animated
 } from "react-native";
@@ -31,6 +29,7 @@ class AddItem extends React.Component {
       swipeToClose: true
     };
 
+    this.checkItemSaved = false;
     this.colorAnimatedValue = new Animated.Value(0);
 
     // Bind handlers
@@ -49,6 +48,21 @@ class AddItem extends React.Component {
   ----------------------------------------------------*/
   componentDidMount() {
     // BackHandler.addEventListener("hardwareBackPress", this.handleBackPress);
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    const stateCheck = this.state.addItemValue !== nextState.addItemValue;
+    const propCheck =
+      this.props.isVisible !== nextProps.isVisible ||
+      nextProps.itemsFetched === true;
+    return stateCheck || propCheck;
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.checkItemSaved !== true) return;
+
+    this.startColorAnimation();
+    this.checkItemSaved = false;
   }
 
   /*--------------------------------------------------
@@ -86,6 +100,10 @@ class AddItem extends React.Component {
   }
 
   handleSave(event) {
+    if (this.state.addItemValue === "") return;
+
+    ColorHelper.incrementColors();
+
     // Pass state to higher-order component
     this.props.onItemAddition(this.state.addItemValue);
 
@@ -93,11 +111,9 @@ class AddItem extends React.Component {
     // Vibration.vibrate();
     this.refs.toast.show("Saved!");
 
-    // Animate background color
-    this.startColorAnimation();
-
     // Set local state
     this.setState({ addItemValue: "" });
+    this.checkItemSaved = true;
   }
 
   startColorAnimation() {
@@ -105,15 +121,18 @@ class AddItem extends React.Component {
 
     Animated.timing(this.colorAnimatedValue, {
       toValue: 100,
-      duration: 300
+      duration: 1000,
+      delay: 0,
+      useNativeDriver: false
     }).start();
   }
 
   getAnimationStyles() {
     const { currentColor, nextColor } = ColorHelper.getCurrentAndNextColor();
-    const currentColorDark = Chroma(currentColor).darken(1.5).css();
-    const nextColorDark = Chroma(nextColor).darken(1.5).css();
-    const nextColorDarker = Chroma(nextColor).darken(2).css();
+    const currentColorDark = Chroma(currentColor).darken(0.5).css();
+    const currentColorDarker = Chroma(currentColor).darken(1.5).css();
+    const nextColorDark = Chroma(nextColor).darken(0.5).css();
+    const nextColorDarker = Chroma(nextColor).darken(1.5).css();
 
     const interpolateColor = this.colorAnimatedValue.interpolate({
       inputRange: [0, 100],
@@ -123,10 +142,15 @@ class AddItem extends React.Component {
       inputRange: [0, 100],
       outputRange: [currentColorDark, nextColorDark]
     });
+    const interpolateColorDarker = this.colorAnimatedValue.interpolate({
+      inputRange: [0, 100],
+      outputRange: [currentColorDarker, nextColorDarker]
+    });
 
     const animatedStyle = {
       colors: {
         currentColor,
+        currentColorDarker,
         nextColor,
         nextColorDark,
         nextColorDarker
@@ -135,7 +159,7 @@ class AddItem extends React.Component {
         backgroundColor: interpolateColor
       },
       add_item__title: {
-        color: interpolateColorDark
+        color: interpolateColorDarker
       },
       add_item_save__button: {
         backgroundColor: interpolateColorDark
@@ -251,13 +275,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: AppStyles.colors.redPrimary,
     borderRadius: 5,
-    marginTop: 15,
+    marginTop: 22,
     elevation: 5
   },
   modal_sub_container: {
     flex: 1,
     paddingHorizontal: 35,
-    paddingTop: 35,
+    paddingTop: 10,
     paddingBottom: 10,
     justifyContent: "center",
     alignItems: "center"
@@ -281,12 +305,12 @@ const styles = StyleSheet.create({
     margin: 0,
     marginLeft: -6,
     width: 300,
-    fontSize: 36,
+    fontSize: 46,
     fontFamily: "Overpass-Regular",
     color: "white",
     fontWeight: "100",
     textAlignVertical: "top",
-    lineHeight: 50,
+    lineHeight: 60,
     maxHeight: 170
   },
   add_item_save__button: {

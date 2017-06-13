@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
   },
   list_view: {
     flex: 1,
-    paddingTop: 5,
+    paddingTop: 10,
     paddingBottom: 250,
     marginTop: 0
   },

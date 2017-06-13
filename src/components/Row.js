@@ -38,9 +38,9 @@ class Row extends React.PureComponent {
     this.animatedValueScaleIn.setValue(0);
     Animated.spring(this.animatedValueScaleIn, {
       toValue: 1,
-      duration: 100,
-      friction: 4,
-      tension: 40,
+      duration: 500,
+      friction: 2,
+      tension: 60,
       delay: 0,
       useNativeDriver: false
     }).start();
@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
   },
   item_title_large: {
     fontSize: 22,
-    lineHeight: 34
+    lineHeight: 36
   },
   item_title_medium: {
     fontSize: 16,

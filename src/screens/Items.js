@@ -20,6 +20,8 @@ class Items extends React.Component {
     // Initialize state
     this.setStateHandler(this.getActionEnum().init);
 
+    this.itemsFetched = false;
+
     // Bind handlers
     this.setStateHandler = this.setStateHandler.bind(this);
     this.getActionEnum = this.getActionEnum.bind(this);
@@ -39,6 +41,10 @@ class Items extends React.Component {
   ----------------------------------------------------*/
   componentWillUpdate(nextProps, nextState) {
     this.checkAndDeleteItemFromStore(nextProps, nextState);
+  }
+
+  componentDidUpdate() {
+    this.itemsFetched = false;
   }
 
   /*--------------------------------------------------
@@ -83,7 +89,9 @@ class Items extends React.Component {
         value: params.addItemValue,
         selected: false,
         creationTimestamp: new Date(),
-        bgColor: ColorHelper.getColorForRow(),
+        bgColor: ColorHelper.getColorForRow({
+          incrementColors: false
+        }),
         contentType: "text",
         alarms: []
       },
@@ -131,6 +139,8 @@ class Items extends React.Component {
     this.state.rowToDelete = null;
     this.state.items = newItems; //TODO: Maintain as simple local data, not state
     this.storeLocalData();
+
+    this.setupColorIndex();
   }
 
   storeLocalData() {
@@ -148,6 +158,7 @@ class Items extends React.Component {
             },
             () => {
               this.setupColorIndex();
+              this.itemsFetched = true;
             }
           );
         }
@@ -217,6 +228,7 @@ class Items extends React.Component {
           isVisible={this.state.showAddItem}
           onItemAddition={this.handleItemAddition}
           onClose={this.handleCloseAddItem}
+          itemsFetched={this.itemsFetched}
         />
       </View>
     );

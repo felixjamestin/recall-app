@@ -2,9 +2,17 @@ import { AppStyles } from "./Index";
 
 export class ColorHelper {
   static bgColorIndex = 0;
+  static saveCounter = 0; // Used to update color upon saving items
 
   static setColorIndex(newIndex) {
     ColorHelper.bgColorIndex = newIndex;
+  }
+
+  static incrementColors() {
+    if (ColorHelper.saveCounter >= 1) {
+      ColorHelper.bgColorIndex++;
+    }
+    ColorHelper.saveCounter++;
   }
 
   static getCurrentAndNextColor() {
@@ -19,9 +27,11 @@ export class ColorHelper {
     };
   }
 
-  static getColorForRow() {
+  static getColorForRow({ incrementColors = true } = {}) {
     const color = ColorHelper.getCurrentAndNextColor().currentColor;
-    ColorHelper.bgColorIndex++;
+
+    if (incrementColors) ColorHelper.bgColorIndex++;
+
     return color;
   }
 
