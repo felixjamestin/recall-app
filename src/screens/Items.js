@@ -1,7 +1,7 @@
 import React from "react";
 import { View, AsyncStorage, StatusBar } from "react-native";
 import { AddItem, ListItems } from "./Index";
-import { Item } from "./../components/Index";
+import { Item, AddItemsButton } from "./../components/Index";
 import {
   AppStyles,
   ArrayHelper,
@@ -223,6 +223,12 @@ class Items extends React.Component {
           onItemDelete={this.handleItemDeletion}
           onAnimateAddButtonComplete={this.handleStopAddButtonAnimation}
           onAnimateRowComplete={this.handleStopRowAnimation}
+        />
+        <AddItemsButton
+          isAddItemVisible={this.state.showAddItem}
+          onShowAddItem={this.handleShowAddItem}
+          shouldAnimateAddButton={this.state.animateAddButton}
+          onAnimateAddButtonComplete={this.handleStopAddButtonAnimation}
         />
         <AddItem
           isVisible={this.state.showAddItem}

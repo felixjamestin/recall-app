@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Image, ListView, StyleSheet } from "react-native";
-import { AddItemsButton, Row } from "./../components/Index";
+import { Row } from "./../components/Index";
 import { AppStyles } from "./../components/common/Index";
 
 class ListItems extends React.Component {
@@ -19,7 +19,6 @@ class ListItems extends React.Component {
 
     // Bindings
     this.handleRenderRow = this.handleRenderRow.bind(this);
-    this.handleShowAddItem = this.handleShowAddItem.bind(this);
     this.handleShouldScaleInRow = this.handleShouldScaleInRow.bind(this);
   }
 
@@ -34,8 +33,10 @@ class ListItems extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    // return this.props.items !== nextProps.items;
-    return true;
+    const haveItemsChanged = this.props.items !== nextProps.items;
+    const shouldShowAddItem = nextProps.isAddItemVisible === true;
+
+    return haveItemsChanged || shouldShowAddItem;
   }
 
   /*--------------------------------------------------
@@ -63,13 +64,10 @@ class ListItems extends React.Component {
   }
 
   handleScrollToTop() {
-    if (!this.hasItems()) return;
-    this.refs.listView.scrollTo({ x: 0, y: 0, animated: true });
-  }
+    if (!this.hasItems() || this.props.isAddItemVisible !== true) return;
+    if (this.refs.listView == null) return;
 
-  handleShowAddItem() {
-    this.handleScrollToTop();
-    this.props.onShowAddItem();
+    this.refs.listView.scrollTo({ x: 0, y: 0, animated: true });
   }
 
   hasItems() {
@@ -77,7 +75,6 @@ class ListItems extends React.Component {
   }
 
   handleShouldScaleInRow() {
-    // if (this.props.isAddItemVisible) return true;
     if (this.props.isAddItemVisible && this.props.shouldAnimateRow) return true;
     return false;
   }
@@ -86,6 +83,8 @@ class ListItems extends React.Component {
     Render UI
   ----------------------------------------------------*/
   render() {
+    this.handleScrollToTop();
+
     const finalItemsView = this.hasItems()
       ? this.renderWhenItems()
       : this.renderWhenNoItems();
@@ -103,12 +102,6 @@ class ListItems extends React.Component {
         <View style={styles.no_items_state}>
           <Image source={require("./../../assets/images/no_items_state.png")} />
         </View>
-        <AddItemsButton
-          isAddItemVisible={this.props.isAddItemVisible}
-          onShowAddItem={this.handleShowAddItem}
-          shouldAnimateAddButton={this.props.shouldAnimateAddButton}
-          onAnimateAddButtonComplete={this.props.onAnimateAddButtonComplete}
-        />
       </View>
     );
   }
@@ -121,12 +114,6 @@ class ListItems extends React.Component {
           style={styles.list_view}
           dataSource={this.state.dataSource}
           renderRow={this.handleRenderRow}
-        />
-        <AddItemsButton
-          isAddItemVisible={this.props.isAddItemVisible}
-          onShowAddItem={this.handleShowAddItem}
-          shouldAnimateAddButton={this.props.shouldAnimateAddButton}
-          onAnimateAddButtonComplete={this.props.onAnimateAddButtonComplete}
         />
       </View>
     );
