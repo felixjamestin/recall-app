@@ -2,6 +2,7 @@ import React from "react";
 import {
   View,
   Text,
+  Image,
   TouchableHighlight,
   TextInput,
   StyleSheet,
@@ -9,7 +10,6 @@ import {
   Animated
 } from "react-native";
 import Modal from "react-native-modalbox";
-import Toast from "react-native-easy-toast";
 import Chroma from "chroma-js";
 import { AppStyles, ColorHelper } from "./../components/common/Index";
 
@@ -30,17 +30,17 @@ class AddItem extends React.Component {
     };
 
     this.checkItemSaved = false;
-    this.colorAnimatedValue = new Animated.Value(0);
+    this.checkItemChanged = false;
+    this.colorChangeAnimatedValue = new Animated.Value(0);
+    this.saveFeedbackAnimatedValue = new Animated.Value(0);
+    this.revealSaveActionAnimatedValue = new Animated.Value(0);
 
     // Bind handlers
     this.handleChange = this.handleChange.bind(this);
-    this.handleBlur = this.handleBlur.bind(this);
-    this.handleEndEditing = this.handleEndEditing.bind(this);
     this.handleSave = this.handleSave.bind(this);
     this.handleModalVisibility = this.handleModalVisibility.bind(this);
     this.handleBackPress = this.handleBackPress.bind(this);
     this.handleClose = this.handleClose.bind(this);
-    this.handleOpen = this.handleOpen.bind(this);
   }
 
   /*--------------------------------------------------
@@ -61,7 +61,12 @@ class AddItem extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     if (this.checkItemSaved !== true) return;
 
-    this.startColorAnimation();
+    this.startColorChangeAnimation();
+    this.startSaveFeedbackAnimation();
+    setTimeout(() => {
+      this.startHideSaveAnimation();
+    }, 1000);
+
     this.checkItemSaved = false;
   }
 
@@ -77,23 +82,15 @@ class AddItem extends React.Component {
   }
 
   handleChange(event) {
-    // Set local state
     this.setState({ addItemValue: event.nativeEvent.text });
-  }
 
-  handleBlur(value) {
-    // console.log("Blur was fired");
-  }
-
-  handleEndEditing(event) {
-    // console.log(`On end editing: ${event.nativeEvent.text}`);
+    // Show/hide the save button
+    this.startToggleVisibilitySaveAnimation(event.nativeEvent.text);
   }
 
   handleClose() {
     this.props.onClose();
   }
-
-  handleOpen() {}
 
   handleClosingState(state) {
     Keyboard.dismiss();
@@ -107,42 +104,91 @@ class AddItem extends React.Component {
     // Pass state to higher-order component
     this.props.onItemAddition(this.state.addItemValue);
 
-    // Feedback
-    // Vibration.vibrate();
-    this.refs.toast.show("Saved!");
-
     // Set local state
     this.setState({ addItemValue: "" });
     this.checkItemSaved = true;
   }
 
-  startColorAnimation() {
-    this.colorAnimatedValue.setValue(0);
+  startColorChangeAnimation() {
+    this.colorChangeAnimatedValue.setValue(0);
 
-    Animated.timing(this.colorAnimatedValue, {
+    Animated.timing(this.colorChangeAnimatedValue, {
       toValue: 100,
-      duration: 1000,
+      duration: 700,
       delay: 0,
       useNativeDriver: false
     }).start();
   }
 
+  startSaveFeedbackAnimation() {
+    this.saveFeedbackAnimatedValue.setValue(0);
+
+    Animated.spring(this.saveFeedbackAnimatedValue, {
+      toValue: 0.4,
+      duration: 100,
+      friction: 6,
+      tension: 100,
+      delay: 0,
+      useNativeDriver: true
+    }).start(() => {
+      Animated.timing(this.saveFeedbackAnimatedValue, {
+        toValue: 0,
+        duration: 500,
+        delay: 1000,
+        useNativeDriver: true
+      }).start();
+    });
+  }
+
+  startToggleVisibilitySaveAnimation(value) {
+    if (this.checkItemChanged !== true) {
+      this.startRevealSaveAnimation();
+    } else if (value === "") {
+      this.startHideSaveAnimation();
+    }
+  }
+
+  startRevealSaveAnimation() {
+    this.revealSaveActionAnimatedValue.setValue(0);
+    Animated.spring(this.revealSaveActionAnimatedValue, {
+      toValue: -60,
+      duration: 50,
+      friction: 8,
+      tension: 100,
+      delay: 0,
+      useNativeDriver: false
+    }).start();
+    this.checkItemChanged = true;
+  }
+
+  startHideSaveAnimation() {
+    Animated.spring(this.revealSaveActionAnimatedValue, {
+      toValue: 0,
+      duration: 50,
+      friction: 8,
+      tension: 100,
+      delay: 0,
+      useNativeDriver: false
+    }).start();
+    this.checkItemChanged = false;
+  }
+
   getAnimationStyles() {
     const { currentColor, nextColor } = ColorHelper.getCurrentAndNextColor();
     const currentColorDark = Chroma(currentColor).darken(0.5).css();
-    const currentColorDarker = Chroma(currentColor).darken(1.5).css();
+    const currentColorDarker = Chroma(currentColor).darken(1.2).css();
     const nextColorDark = Chroma(nextColor).darken(0.5).css();
-    const nextColorDarker = Chroma(nextColor).darken(1.5).css();
+    const nextColorDarker = Chroma(nextColor).darken(1.2).css();
 
-    const interpolateColor = this.colorAnimatedValue.interpolate({
+    const interpolateColor = this.colorChangeAnimatedValue.interpolate({
       inputRange: [0, 100],
       outputRange: [currentColor, nextColor]
     });
-    const interpolateColorDark = this.colorAnimatedValue.interpolate({
+    const interpolateColorDark = this.colorChangeAnimatedValue.interpolate({
       inputRange: [0, 100],
       outputRange: [currentColorDark, nextColorDark]
     });
-    const interpolateColorDarker = this.colorAnimatedValue.interpolate({
+    const interpolateColorDarker = this.colorChangeAnimatedValue.interpolate({
       inputRange: [0, 100],
       outputRange: [currentColorDarker, nextColorDarker]
     });
@@ -187,7 +233,6 @@ class AddItem extends React.Component {
           swipeToClose={this.state.swipeToClose}
           swipeThreshold={150}
           onClosed={this.handleClose}
-          onOpened={this.handleOpen}
           onClosingState={this.handleClosingState}
           position={"top"}
           backdrop={false}
@@ -196,10 +241,14 @@ class AddItem extends React.Component {
           backdropPressToClose={false}
           startOpen
         >
-
+          <Image
+            source={require("./../../assets/images/pulldown.png")}
+            style={styles.pulldown}
+          />
           <View style={styles.modal_sub_container}>
 
             <View style={styles.add_item__container}>
+
               <Animated.Text
                 style={[styles.add_item__title, animatedStyle.add_item__title]}
               >
@@ -211,8 +260,6 @@ class AddItem extends React.Component {
                 value={this.state.addItemValue}
                 onChange={this.handleChange}
                 onSubmitEditing={this.handleSave}
-                onBlur={this.handleBlur}
-                onEndEditing={this.handleEndEditing}
                 blurOnSubmit={false}
                 returnKeyType="done"
                 autoCapitalize="sentences"
@@ -231,7 +278,10 @@ class AddItem extends React.Component {
           <AnimatedTouchableHighlight
             style={[
               styles.add_item_save__button,
-              animatedStyle.add_item_save__button
+              animatedStyle.add_item_save__button,
+              {
+                transform: [{ translateY: this.revealSaveActionAnimatedValue }]
+              }
             ]}
             onPress={this.handleSave}
             activeOpacity={1}
@@ -240,18 +290,31 @@ class AddItem extends React.Component {
             <Text style={styles.add_item_save__title}>Save item</Text>
           </AnimatedTouchableHighlight>
 
-        </AnimatedModal>
+          <Animated.Image
+            source={require("./../../assets/images/add_item_sucess.gif")}
+            style={[
+              styles.save_feedback,
+              {
+                opacity: this.saveFeedbackAnimatedValue,
+                transform: [
+                  // {
+                  //   scale: this.saveFeedbackAnimatedValue.interpolate({
+                  //     inputRange: [0, 0.4],
+                  //     outputRange: [0, 1]
+                  //   })
+                  // },
+                  {
+                    translateX: this.saveFeedbackAnimatedValue.interpolate({
+                      inputRange: [0, 0.4],
+                      outputRange: [-20, -15]
+                    })
+                  }
+                ]
+              }
+            ]}
+          />
 
-        <Toast
-          ref="toast"
-          style={styles.toast}
-          position="top"
-          positionValue={108}
-          fadeInDuration={200}
-          fadeOutDuration={200}
-          opacity={1}
-          textStyle={styles.toast_text}
-        />
+        </AnimatedModal>
 
       </View>
     );
@@ -268,20 +331,23 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     position: "absolute",
     height: "100%",
-    width: "96%"
+    width: "97%"
   },
   modal: {
     flex: 1,
     justifyContent: "center",
     backgroundColor: AppStyles.colors.redPrimary,
-    borderRadius: 5,
-    marginTop: 22,
+    borderTopLeftRadius: 5,
+    borderTopRightRadius: 5,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
+    marginTop: 5, //20
     elevation: 5
   },
   modal_sub_container: {
     flex: 1,
     paddingHorizontal: 35,
-    paddingTop: 10,
+    paddingTop: 0,
     paddingBottom: 10,
     justifyContent: "center",
     alignItems: "center"
@@ -296,7 +362,7 @@ const styles = StyleSheet.create({
     color: Chroma(AppStyles.colors.redPrimary).darken(1.5),
     fontSize: 16,
     fontFamily: "Overpass-SemiBold",
-    marginTop: 70,
+    marginTop: 90,
     marginBottom: -8,
     padding: 0
   },
@@ -317,7 +383,8 @@ const styles = StyleSheet.create({
     alignSelf: "stretch",
     padding: 18,
     backgroundColor: AppStyles.colors.redSecondary,
-    borderColor: "black"
+    borderColor: "black",
+    top: 60
   },
   add_item_save__title: {
     color: "white",
@@ -336,6 +403,20 @@ const styles = StyleSheet.create({
     color: "rgba(0,0,0,.5)",
     fontSize: 14,
     fontFamily: "Overpass-SemiBold"
+  },
+  save_feedback: {
+    width: 50,
+    height: 50,
+    opacity: 0,
+    alignSelf: "flex-end",
+    marginRight: 20,
+    marginBottom: -10,
+    position: "absolute"
+  },
+  pulldown: {
+    alignSelf: "center",
+    marginTop: 18,
+    opacity: 0.8
   }
 });
 

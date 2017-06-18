@@ -1,5 +1,6 @@
 import React from "react";
-import { View, Image, ListView, StyleSheet } from "react-native";
+import { View, Image, Text, ListView, StyleSheet } from "react-native";
+import Chroma from "chroma-js";
 import { Row } from "./../components/Index";
 import { AppStyles } from "./../components/common/Index";
 
@@ -100,7 +101,14 @@ class ListItems extends React.Component {
     return (
       <View style={styles.container}>
         <View style={styles.no_items_state}>
-          <Image source={require("./../../assets/images/no_items_state.png")} />
+          <Image
+            source={require("./../../assets/images/no_items_state.gif")}
+            style={{ width: 170, height: 170 }}
+          />
+          <Text style={styles.empty_state__title}>All Done!</Text>
+          <Text style={styles.empty_state__subtitle}>
+            and free like a bird :)
+          </Text>
         </View>
       </View>
     );
@@ -125,7 +133,7 @@ class ListItems extends React.Component {
 ----------------------------------------------------*/
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: AppStyles.colors.redBackground,
+    backgroundColor: AppStyles.colors.appBackground,
     height: "100%",
     width: "100%"
   },
@@ -139,6 +147,17 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center"
+  },
+  empty_state__title: {
+    fontSize: 16,
+    color: "white",
+    fontFamily: "Overpass-Regular",
+    marginTop: -15
+  },
+  empty_state__subtitle: {
+    fontSize: 14,
+    color: Chroma(AppStyles.colors.appBackground).brighten(2.2),
+    fontFamily: "Overpass-Regular"
   }
 });
 

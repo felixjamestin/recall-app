@@ -137,7 +137,7 @@ class Items extends React.Component {
     );
 
     this.state.rowToDelete = null;
-    this.state.items = newItems; //TODO: Maintain as simple local data, not state
+    this.state.items = newItems;
     this.storeLocalData();
 
     this.setupColorIndex();

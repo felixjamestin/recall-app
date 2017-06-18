@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, Animated, Easing } from "react-native";
+import { View, Text, Image, StyleSheet, Animated, Easing } from "react-native";
 import Swipeable from "react-native-swipeable";
 import { AppStyles } from "./../components/common/Index";
 
@@ -143,27 +143,22 @@ class Row extends React.PureComponent {
 
   renderDeleteAction(direction) {
     const styleDirection = direction === "left"
-      ? styles.row_action_full_swipe_text_left
-      : styles.row_action_full_swipe_text_right;
+      ? styles.row_action_swipe_left
+      : styles.row_action_swipe_right;
 
     return (
-      <View
-        style={[
-          styles.row_action_full_swipe,
-          {
-            backgroundColor: this.state.wasDeleteActionActivated
-              ? AppStyles.colors.red
-              : AppStyles.colors.green
-          }
-        ]}
-      >
+      <View style={styles.row_action_swipe}>
+
         {this.state.wasDeleteActionActivated
-          ? <Text style={[styles.row_action_full_swipe_text, styleDirection]}>
-              Release
-            </Text>
-          : <Text style={[styles.row_action_full_swipe_text, styleDirection]}>
-              Pull to delete
-            </Text>}
+          ? <Image
+              source={require("./../../assets/images/delete_row_active.png")}
+              style={styleDirection}
+            />
+          : <Image
+              source={require("./../../assets/images/delete_row.png")}
+              style={styleDirection}
+            />}
+
       </View>
     );
   }
@@ -215,22 +210,16 @@ const styles = StyleSheet.create({
     fontFamily: "Overpass-Regular",
     color: "white"
   },
-  row_action_full_swipe: {
-    backgroundColor: AppStyles.colors.redSecondary,
-    borderRadius: 5,
-    paddingHorizontal: 33,
+  row_action_swipe: {
+    paddingHorizontal: 10,
     marginVertical: 3,
     minHeight: 125,
     justifyContent: "center"
   },
-  row_action_full_swipe_text: {
-    fontSize: 14,
-    color: "white"
-  },
-  row_action_full_swipe_text_left: {
+  row_action_swipe_left: {
     alignSelf: "flex-end"
   },
-  row_action_full_swipe_text_right: {
+  row_action_swipe_right: {
     alignSelf: "flex-start"
   }
 });

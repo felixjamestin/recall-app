@@ -1,6 +1,6 @@
 const AppStyles = {
   colors: {
-    redBackground: "#330C2F",
+    appBackground: "#330C2F",
     // redBackground: "#290000",
     redText: "#81000F",
     redSecondaryDark: "#8A061A",
