@@ -142,7 +142,7 @@ class AddItem extends React.Component {
     if (this.checkItemChanged !== true) {
       this.startRevealSaveAnimation();
     } else if (value === "") {
-      this.startHideSaveAnimation();
+      this.startHideSaveAnimation({ delay: false });
     }
   }
 
@@ -159,7 +159,9 @@ class AddItem extends React.Component {
     this.checkItemChanged = true;
   }
 
-  startHideSaveAnimation() {
+  startHideSaveAnimation({ delay = true } = {}) {
+    const timeoutSecs = delay === true ? 1000 : 0;
+
     setTimeout(() => {
       Animated.spring(this.revealSaveActionAnimatedValue, {
         toValue: 0,
@@ -170,7 +172,7 @@ class AddItem extends React.Component {
         useNativeDriver: false
       }).start();
       this.checkItemChanged = false;
-    }, 1000);
+    }, timeoutSecs);
   }
 
   getDynamicStylesForAddItemText(text) {
