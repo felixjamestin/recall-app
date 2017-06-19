@@ -188,12 +188,12 @@ const styles = StyleSheet.create({
   item_title_medium: {
     fontSize: 16,
     lineHeight: 28,
-    paddingRight: 30
+    paddingRight: 20
   },
   item_title_small: {
     fontSize: 16,
     lineHeight: 28,
-    paddingRight: 40
+    paddingRight: 20
   },
   row_action_button: {
     backgroundColor: AppStyles.colors.redSecondary,

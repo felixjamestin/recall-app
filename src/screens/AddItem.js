@@ -179,9 +179,9 @@ class AddItem extends React.Component {
     let textStyle = styles.add_item__text;
 
     const textLength = text.length;
-    if (textLength > 55) {
+    if (textLength > 45) {
       textStyle = styles.add_item__text_small;
-    } else if (textLength > 40) {
+    } else if (textLength > 30) {
       textStyle = styles.add_item__text_small;
     }
 
