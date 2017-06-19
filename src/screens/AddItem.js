@@ -63,9 +63,7 @@ class AddItem extends React.Component {
 
     this.startColorChangeAnimation();
     this.startSaveFeedbackAnimation();
-    setTimeout(() => {
-      this.startHideSaveAnimation();
-    }, 1000);
+    this.startHideSaveAnimation();
 
     this.checkItemSaved = false;
   }
@@ -162,15 +160,30 @@ class AddItem extends React.Component {
   }
 
   startHideSaveAnimation() {
-    Animated.spring(this.revealSaveActionAnimatedValue, {
-      toValue: 0,
-      duration: 50,
-      friction: 8,
-      tension: 100,
-      delay: 0,
-      useNativeDriver: false
-    }).start();
-    this.checkItemChanged = false;
+    setTimeout(() => {
+      Animated.spring(this.revealSaveActionAnimatedValue, {
+        toValue: 0,
+        duration: 50,
+        friction: 8,
+        tension: 100,
+        delay: 0,
+        useNativeDriver: false
+      }).start();
+      this.checkItemChanged = false;
+    }, 1000);
+  }
+
+  getDynamicStylesForAddItemText(text) {
+    let textStyle = styles.add_item__text;
+
+    const textLength = text.length;
+    if (textLength > 55) {
+      textStyle = styles.add_item__text_small;
+    } else if (textLength > 40) {
+      textStyle = styles.add_item__text_small;
+    }
+
+    return textStyle;
   }
 
   getAnimationStyles() {
@@ -223,6 +236,9 @@ class AddItem extends React.Component {
   ----------------------------------------------------*/
   render() {
     const animatedStyle = this.getAnimationStyles();
+    const addItemTextStyle = this.getDynamicStylesForAddItemText(
+      this.state.addItemValue
+    );
 
     return (
       <View style={styles.container}>
@@ -256,7 +272,7 @@ class AddItem extends React.Component {
               </Animated.Text>
 
               <TextInput
-                style={styles.add_item__text}
+                style={[styles.add_item__text, addItemTextStyle]}
                 value={this.state.addItemValue}
                 onChange={this.handleChange}
                 onSubmitEditing={this.handleSave}
@@ -306,7 +322,7 @@ class AddItem extends React.Component {
                   {
                     translateX: this.saveFeedbackAnimatedValue.interpolate({
                       inputRange: [0, 0.4],
-                      outputRange: [-20, -15]
+                      outputRange: [-25, -10]
                     })
                   }
                 ]
@@ -376,8 +392,12 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "100",
     textAlignVertical: "top",
-    lineHeight: 60,
     maxHeight: 170
+    // lineHeight: 60,
+  },
+  add_item__text_small: {
+    fontSize: 32
+    // lineHeight: 36
   },
   add_item_save__button: {
     alignSelf: "stretch",
