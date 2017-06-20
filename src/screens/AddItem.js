@@ -395,11 +395,10 @@ const styles = StyleSheet.create({
     fontWeight: "100",
     textAlignVertical: "top",
     maxHeight: 170
-    // lineHeight: 60,
   },
   add_item__text_small: {
-    fontSize: 32
-    // lineHeight: 36
+    fontSize: 32,
+    marginRight: 50
   },
   add_item_save__button: {
     alignSelf: "stretch",
