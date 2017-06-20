@@ -8,7 +8,7 @@ import {
   Easing
 } from "react-native";
 
-class AddItemsButton extends React.Component {
+class AddItemsButton extends React.PureComponent {
   constructor(props) {
     super(props);
     this.animatedValueScaleIn = new Animated.Value(0);
@@ -17,6 +17,10 @@ class AddItemsButton extends React.Component {
   /*--------------------------------------------------
     Lifecycle events
   ----------------------------------------------------*/
+  shouldComponentUpdate(nextProps, nextState) {
+    return this.props.isAddItemVisible === true;
+  }
+
   componentDidUpdate(prevProps, prevState) {
     this.handleScaleIn();
   }
