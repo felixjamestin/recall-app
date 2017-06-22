@@ -138,6 +138,7 @@ class Items extends React.Component {
 
     this.state.rowToDelete = null;
     this.state.items = newItems;
+    // this.setState({ items: newItems });
     this.storeLocalData();
 
     this.setupColorIndex();
@@ -194,11 +195,15 @@ class Items extends React.Component {
   setupColorIndex() {
     // Determine background color to start with based on saved items
     const latestItem = this.state.items[0];
-    const rowColors = Object.values(AppStyles.rowColors);
-    const relativeIndexInColorArray = rowColors.findIndex(
-      value => value === latestItem.bgColor
-    );
-    const newColorIndex = (relativeIndexInColorArray + 1) % rowColors.length;
+    let newColorIndex = 0; // Default in case of no items
+
+    if (typeof latestItem !== "undefined") {
+      const rowColors = Object.values(AppStyles.rowColors);
+      const relativeIndexInColorArray = rowColors.findIndex(
+        value => value === latestItem.bgColor
+      );
+      newColorIndex = (relativeIndexInColorArray + 1) % rowColors.length;
+    }
 
     ColorHelper.setColorIndex(newColorIndex);
   }
@@ -219,7 +224,6 @@ class Items extends React.Component {
           isAddItemVisible={this.state.showAddItem}
           shouldAnimateRow={this.state.animateRow}
           shouldAnimateAddButton={this.state.animateAddButton}
-          onShowAddItem={this.handleShowAddItem}
           onItemDelete={this.handleItemDeletion}
           onAnimateAddButtonComplete={this.handleStopAddButtonAnimation}
           onAnimateRowComplete={this.handleStopRowAnimation}

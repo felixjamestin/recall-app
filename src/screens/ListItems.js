@@ -35,7 +35,7 @@ class ListItems extends React.Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     const haveItemsChanged = this.props.items !== nextProps.items;
-    const shouldShowAddItem = nextProps.isAddItemVisible === true;
+    const shouldShowAddItem = nextProps.isAddItemVisible === true; // Scroll list to top
 
     return haveItemsChanged || shouldShowAddItem;
   }
@@ -105,7 +105,7 @@ class ListItems extends React.Component {
             source={require("./../../assets/images/no_items_state.gif")}
             style={{ width: 170, height: 170 }}
           />
-          <Text style={styles.empty_state__title}>All Done!</Text>
+          <Text style={styles.empty_state__title}>You're all done!</Text>
           <Text style={styles.empty_state__subtitle}>
             and free like a bird :)
           </Text>
@@ -146,7 +146,8 @@ const styles = StyleSheet.create({
   no_items_state: {
     flex: 1,
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
+    marginTop: -70
   },
   empty_state__title: {
     fontSize: 16,
@@ -157,7 +158,8 @@ const styles = StyleSheet.create({
   empty_state__subtitle: {
     fontSize: 14,
     color: Chroma(AppStyles.colors.appBackground).brighten(2.2),
-    fontFamily: "Overpass-Regular"
+    fontFamily: "Overpass-Regular",
+    marginTop: 2
   }
 });
 

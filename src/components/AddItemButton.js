@@ -18,7 +18,11 @@ class AddItemsButton extends React.PureComponent {
     Lifecycle events
   ----------------------------------------------------*/
   shouldComponentUpdate(nextProps, nextState) {
-    return this.props.isAddItemVisible === true;
+    // Update only when the Add Item screen gets hidden
+    return (
+      (this.props.isAddItemVisible === true) &
+      (nextProps.isAddItemVisible !== true)
+    );
   }
 
   componentDidUpdate(prevProps, prevState) {
