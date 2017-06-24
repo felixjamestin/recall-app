@@ -160,7 +160,7 @@ class AddItem extends React.Component {
   }
 
   startHideSaveAnimation({ delay = true } = {}) {
-    const timeoutSecs = delay === true ? 1000 : 0;
+    const timeoutSecs = delay === true ? 0 : 0;
 
     setTimeout(() => {
       Animated.spring(this.revealSaveActionAnimatedValue, {
@@ -303,7 +303,7 @@ class AddItem extends React.Component {
             ]}
             onPress={this.handleSave}
             activeOpacity={1}
-            underlayColor={animatedStyle.colors.nextColorDarker}
+            underlayColor={"rgba(0, 0, 0, 0.3)"}
           >
             <Text style={styles.add_item_save__title}>Save item</Text>
           </AnimatedTouchableHighlight>

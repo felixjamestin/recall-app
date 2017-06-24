@@ -20,8 +20,6 @@ class Items extends React.Component {
     // Initialize state
     this.setStateHandler(this.getActionEnum().init);
 
-    this.itemsFetched = false;
-
     // Bind handlers
     this.setStateHandler = this.setStateHandler.bind(this);
     this.getActionEnum = this.getActionEnum.bind(this);
@@ -73,8 +71,13 @@ class Items extends React.Component {
   }
 
   doInitialization() {
+    // Initialize instance state
+    this.itemsFetched = false;
+    this.items = [];
+
+    // Initialize React state
     this.state = {
-      items: [],
+      actionPerformed: null,
       showAddItem: true,
       animateAddButton: true,
       rowToDelete: null
@@ -95,16 +98,13 @@ class Items extends React.Component {
         contentType: "text",
         alarms: []
       },
-      ...this.state.items
+      ...this.items
     ];
-    this.setState(
-      {
-        items: newItems
-      },
-      () => {
-        this.storeLocalData();
-      }
-    );
+
+    this.items = newItems;
+    this.storeLocalData();
+
+    this.setState({ actionPerformed: this.getActionEnum().add });
   }
 
   doDeletion(params) {
@@ -132,36 +132,28 @@ class Items extends React.Component {
     if (nextState.rowToDelete === null) return;
 
     const newItems = ArrayHelper.removeUsingIndex(
-      this.state.items,
+      this.items,
       nextState.rowToDelete
     );
-
-    this.state.rowToDelete = null;
-    this.state.items = newItems;
-    // this.setState({ items: newItems });
+    this.setStateHandler(this.getActionEnum().set, { rowToDelete: null });
+    this.items = newItems;
     this.storeLocalData();
-
     this.setupColorIndex();
   }
 
   storeLocalData() {
-    AsyncStorage.setItem("items", JSON.stringify(this.state.items));
+    AsyncStorage.setItem("items", JSON.stringify(this.items));
   }
 
   fetchLocalData() {
     AsyncStorage.getItem("items").then(json => {
       try {
         if (json) {
-          const items = JSON.parse(json);
-          this.setState(
-            {
-              items
-            },
-            () => {
-              this.setupColorIndex();
-              this.itemsFetched = true;
-            }
-          );
+          this.items = JSON.parse(json);
+          this.setupColorIndex();
+          this.itemsFetched = true;
+
+          this.setState({ actionPerformed: this.getActionEnum().init });
         }
       } catch (e) {
         console.log(e);
@@ -189,12 +181,12 @@ class Items extends React.Component {
   }
 
   handleStopRowAnimation() {
-    this.state.animateRow = false;
+    this.state.animateRow = false; //TODO: Don't pull this up into items...
   }
 
   setupColorIndex() {
     // Determine background color to start with based on saved items
-    const latestItem = this.state.items[0];
+    const latestItem = this.items[0];
     let newColorIndex = 0; // Default in case of no items
 
     if (typeof latestItem !== "undefined") {
@@ -220,7 +212,7 @@ class Items extends React.Component {
           hidden={false}
         />
         <ListItems
-          items={this.state.items}
+          items={this.items}
           isAddItemVisible={this.state.showAddItem}
           shouldAnimateRow={this.state.animateRow}
           shouldAnimateAddButton={this.state.animateAddButton}

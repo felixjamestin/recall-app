@@ -51,6 +51,7 @@ class Row extends React.PureComponent {
   handleDeleteRow() {
     this.handleDeleteAnimation(({ finished }) => {
       this.props.onRowDelete(this.props.rowID, this.props.rowData.key);
+      this.animatedValueHeight.setValue(1); //Reset height since the same object is reused by the listView
     });
   }
 
