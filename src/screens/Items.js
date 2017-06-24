@@ -207,7 +207,7 @@ class Items extends React.Component {
     return (
       <View>
         <StatusBar
-          backgroundColor={AppStyles.colors.redBackground}
+          backgroundColor={AppStyles.colors.appBackground}
           barStyle="light-content"
           hidden={false}
         />

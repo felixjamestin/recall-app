@@ -36,12 +36,11 @@ class Row extends React.PureComponent {
     if (rowID !== "0" || this.props.onScaleInRowCheck() === false) return;
 
     this.animatedValueScaleIn.setValue(0);
-    Animated.spring(this.animatedValueScaleIn, {
+    Animated.timing(this.animatedValueScaleIn, {
       toValue: 1,
       duration: 500,
-      friction: 2,
-      tension: 60,
-      delay: 0,
+      delay: 900,
+      easing: Easing.in(),
       useNativeDriver: false
     }).start();
 
@@ -120,7 +119,7 @@ class Row extends React.PureComponent {
                 {
                   translateY: this.animatedValueScaleIn.interpolate({
                     inputRange: [0, 1],
-                    outputRange: [-10, 0]
+                    outputRange: [10, 0]
                   })
                 }
               ]
