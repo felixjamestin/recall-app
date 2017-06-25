@@ -72,7 +72,8 @@ class ListItems extends React.Component {
   }
 
   hasItems() {
-    return this.props.items.length > 0;
+    const latestItem = this.props.items.find(value => value.delete !== true);
+    return this.props.items.length > 0 && typeof latestItem !== "undefined";
   }
 
   handleShouldScaleInRow() {

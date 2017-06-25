@@ -50,7 +50,6 @@ class Row extends React.PureComponent {
   handleDeleteRow() {
     this.handleDeleteAnimation(({ finished }) => {
       this.props.onRowDelete(this.props.rowID, this.props.rowData.key);
-      this.animatedValueHeight.setValue(1); //Reset height since the same object is reused by the listView
     });
   }
 
@@ -85,6 +84,11 @@ class Row extends React.PureComponent {
     Render UI
   ----------------------------------------------------*/
   render() {
+    // if (this.props.rowData.delete === true) return null; TODO:
+    if (this.props.rowData.delete === true) {
+      this.animatedValueHeight.setValue(0);
+    } else this.animatedValueHeight.setValue(1);
+
     return (
       <AnimatedSwipeable
         style={{

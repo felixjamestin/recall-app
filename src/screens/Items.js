@@ -2,11 +2,7 @@ import React from "react";
 import { View, AsyncStorage, StatusBar } from "react-native";
 import { AddItem, ListItems } from "./Index";
 import { Item, AddItemsButton } from "./../components/Index";
-import {
-  AppStyles,
-  ArrayHelper,
-  ColorHelper
-} from "./../components/common/Index";
+import { AppStyles, ColorHelper } from "./../components/common/Index";
 
 class Items extends React.Component {
   static navigationOptions = {
@@ -37,10 +33,6 @@ class Items extends React.Component {
   /*--------------------------------------------------
     Lifecycle events
   ----------------------------------------------------*/
-  componentWillUpdate(nextProps, nextState) {
-    this.checkAndDeleteItemFromStore(nextProps, nextState);
-  }
-
   componentDidUpdate() {
     this.itemsFetched = false;
   }
@@ -91,7 +83,8 @@ class Items extends React.Component {
         key: Date.now(),
         value: params.addItemValue,
         selected: false,
-        creationTimestamp: new Date(),
+        delete: false,
+        createdAt: new Date(),
         bgColor: ColorHelper.getColorForRow({
           incrementColors: false
         }),
@@ -108,7 +101,15 @@ class Items extends React.Component {
   }
 
   doDeletion(params) {
-    this.setState({ rowToDelete: params.rowID });
+    // Clone to bypass unnecessary renders in child components
+    const clone = this.items.slice(0);
+    this.items = clone;
+
+    this.items[params.rowID].delete = true;
+    this.storeLocalData();
+
+    this.setupColorIndex();
+    this.setState({ actionPerformed: this.getActionEnum().delete });
   }
 
   doSetParams(params) {
@@ -128,21 +129,11 @@ class Items extends React.Component {
     this.setStateHandler(this.getActionEnum().delete, { rowID, key });
   }
 
-  checkAndDeleteItemFromStore(nextProps, nextState) {
-    if (nextState.rowToDelete === null) return;
-
-    const newItems = ArrayHelper.removeUsingIndex(
-      this.items,
-      nextState.rowToDelete
-    );
-    this.setStateHandler(this.getActionEnum().set, { rowToDelete: null });
-    this.items = newItems;
-    this.storeLocalData();
-    this.setupColorIndex();
-  }
-
   storeLocalData() {
-    AsyncStorage.setItem("items", JSON.stringify(this.items));
+    const itemsExcludingDeleted = this.items.filter(value => {
+      return value.delete !== true;
+    });
+    AsyncStorage.setItem("items", JSON.stringify(itemsExcludingDeleted));
   }
 
   fetchLocalData() {
@@ -186,7 +177,9 @@ class Items extends React.Component {
 
   setupColorIndex() {
     // Determine background color to start with based on saved items
-    const latestItem = this.items[0];
+    const latestItem = this.items.find(item => {
+      return item.delete !== true;
+    });
     let newColorIndex = 0; // Default in case of no items
 
     if (typeof latestItem !== "undefined") {
