@@ -84,10 +84,7 @@ class Row extends React.PureComponent {
     Render UI
   ----------------------------------------------------*/
   render() {
-    // if (this.props.rowData.delete === true) return null; TODO:
-    if (this.props.rowData.delete === true) {
-      this.animatedValueHeight.setValue(0);
-    } else this.animatedValueHeight.setValue(1);
+    if (this.props.rowData.delete === true) return null; TODO:
 
     return (
       <AnimatedSwipeable

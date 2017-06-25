@@ -289,6 +289,7 @@ class AddItem extends React.Component {
                 underlineColorAndroid="transparent"
                 caretHidden={false}
                 selectionColor="rgba(255, 255, 255, 0.3)"
+                keyboardAppearance={"dark"}
               />
             </View>
           </View>
