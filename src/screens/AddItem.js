@@ -7,7 +7,8 @@ import {
   TextInput,
   StyleSheet,
   Keyboard,
-  Animated
+  Animated,
+  KeyboardAvoidingView
 } from "react-native";
 import Modal from "react-native-modalbox";
 import Chroma from "chroma-js";
@@ -265,8 +266,10 @@ class AddItem extends React.Component {
           />
           <View style={styles.modal_sub_container}>
 
-            <View style={styles.add_item__container}>
-
+            <KeyboardAvoidingView
+              style={styles.add_item__container}
+              behavior="padding"
+            >
               <Animated.Text
                 style={[styles.add_item__title, animatedStyle.add_item__title]}
               >
@@ -290,7 +293,7 @@ class AddItem extends React.Component {
                 caretHidden={false}
                 selectionColor="rgba(255, 255, 255, 0.3)"
               />
-            </View>
+            </KeyboardAvoidingView>
           </View>
 
           <AnimatedTouchableHighlight
