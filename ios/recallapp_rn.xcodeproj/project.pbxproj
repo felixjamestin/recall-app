@@ -39,6 +39,7 @@
 		8711E54A257543BB8B3EE13F /* Overpass-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8416D97642B44895A20C3245 /* Overpass-Regular.ttf */; };
 		507E686A3E2743BAA5B72E84 /* Overpass-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7B4C55C8F77B4ADCA905D3A1 /* Overpass-Thin.ttf */; };
 		53711494B8D44AEAA06FDF22 /* Overpass-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D7B0F7BB0D764B7FB0011AD0 /* Overpass-SemiBold.ttf */; };
+		791E6C63603840AE8D734557 /* libRNDeviceInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A53310EBA354D79A62C7875 /* libRNDeviceInfo.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -262,6 +263,8 @@
 		8416D97642B44895A20C3245 /* Overpass-Regular.ttf */ = {isa = PBXFileReference; name = "Overpass-Regular.ttf"; path = "../assets/fonts/Overpass-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		7B4C55C8F77B4ADCA905D3A1 /* Overpass-Thin.ttf */ = {isa = PBXFileReference; name = "Overpass-Thin.ttf"; path = "../assets/fonts/Overpass-Thin.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		D7B0F7BB0D764B7FB0011AD0 /* Overpass-SemiBold.ttf */ = {isa = PBXFileReference; name = "Overpass-SemiBold.ttf"; path = "../assets/fonts/Overpass-SemiBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		44E8D41A4E6D4387936028D9 /* RNDeviceInfo.xcodeproj */ = {isa = PBXFileReference; name = "RNDeviceInfo.xcodeproj"; path = "../node_modules/react-native-device-info/RNDeviceInfo.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		8A53310EBA354D79A62C7875 /* libRNDeviceInfo.a */ = {isa = PBXFileReference; name = "libRNDeviceInfo.a"; path = "libRNDeviceInfo.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -288,6 +291,7 @@
 				832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */,
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
+				791E6C63603840AE8D734557 /* libRNDeviceInfo.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -454,6 +458,7 @@
 				832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */,
 				00C302DF1ABCB9EE00DB3ED1 /* RCTVibration.xcodeproj */,
 				139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */,
+				44E8D41A4E6D4387936028D9 /* RNDeviceInfo.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -996,6 +1001,14 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/recallapp_rn.app/recallapp_rn";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../node_modules/react-native-device-info/RNDeviceInfo",
+				);
 			};
 			name = Debug;
 		};
@@ -1013,6 +1026,14 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/recallapp_rn.app/recallapp_rn";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../node_modules/react-native-device-info/RNDeviceInfo",
+				);
 			};
 			name = Release;
 		};
@@ -1031,6 +1052,10 @@
 				);
 				PRODUCT_NAME = recallapp_rn;
 				VERSIONING_SYSTEM = "apple-generic";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../node_modules/react-native-device-info/RNDeviceInfo",
+				);
 			};
 			name = Debug;
 		};
@@ -1048,6 +1073,10 @@
 				);
 				PRODUCT_NAME = recallapp_rn;
 				VERSIONING_SYSTEM = "apple-generic";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../node_modules/react-native-device-info/RNDeviceInfo",
+				);
 			};
 			name = Release;
 		};
@@ -1074,6 +1103,14 @@
 				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 9.2;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../node_modules/react-native-device-info/RNDeviceInfo",
+				);
 			};
 			name = Debug;
 		};
@@ -1100,6 +1137,14 @@
 				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 9.2;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../node_modules/react-native-device-info/RNDeviceInfo",
+				);
 			};
 			name = Release;
 		};
@@ -1121,6 +1166,10 @@
 				SDKROOT = appletvos;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/recallapp_rn-tvOS.app/recallapp_rn-tvOS";
 				TVOS_DEPLOYMENT_TARGET = 10.1;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 			};
 			name = Debug;
 		};
@@ -1142,6 +1191,10 @@
 				SDKROOT = appletvos;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/recallapp_rn-tvOS.app/recallapp_rn-tvOS";
 				TVOS_DEPLOYMENT_TARGET = 10.1;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 			};
 			name = Release;
 		};

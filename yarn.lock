@@ -75,6 +75,13 @@ amdefine@>=0.0.4:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/amdefine/-/amdefine-1.0.1.tgz#4a5282ac164729e93619bcfd3ad151f817ce91f5"
 
+analytics-react-native@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/analytics-react-native/-/analytics-react-native-1.1.0.tgz#9e8a2552146568de94190ad911616416259e219b"
+  dependencies:
+    base-64 "0.1.0"
+    type-of "2.0.1"
+
 ansi-align@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/ansi-align/-/ansi-align-2.0.0.tgz#c36aeccba563b89ceb556f3690f0b1d9e3547f7f"
@@ -890,6 +897,10 @@ babylon@^6.0.18, babylon@^6.11.0, babylon@^6.13.0, babylon@^6.15.0, babylon@^6.1
 balanced-match@^0.4.1:
   version "0.4.2"
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-0.4.2.tgz#cb3f3e3c732dc0f01ee70b403f302e61d7709838"
+
+base-64@0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/base-64/-/base-64-0.1.0.tgz#780a99c84e7d600260361511c4877613bf24f6bb"
 
 base64-js@0.0.8:
   version "0.0.8"
@@ -4188,6 +4199,10 @@ react-native-animatable@^1.1.1:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/react-native-animatable/-/react-native-animatable-1.2.0.tgz#fd279c6ee4b49161c6cc3b951ed7765b35a73467"
 
+react-native-device-info@^0.10.2:
+  version "0.10.2"
+  resolved "https://registry.yarnpkg.com/react-native-device-info/-/react-native-device-info-0.10.2.tgz#350cd68ed43839022ddea0a3a423439f16fa4fba"
+
 react-native-dismiss-keyboard@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/react-native-dismiss-keyboard/-/react-native-dismiss-keyboard-1.0.0.tgz#32886242b3f2317e121f3aeb9b0a585e2b879b49"
@@ -5133,6 +5148,10 @@ type-is@~1.6.6:
   dependencies:
     media-typer "0.3.0"
     mime-types "~2.1.15"
+
+type-of@2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/type-of/-/type-of-2.0.1.tgz#e72a1741896568e9f628378d816d6912f7f23972"
 
 typedarray@^0.0.6:
   version "0.0.6"

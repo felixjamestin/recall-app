@@ -10,8 +10,8 @@ const AppStyles = {
   },
   rowColors: {
     a: "#774CC5",
-    b: "#32936F",
-    c: "#4BA3D3",
+    b: "#02C39A",
+    c: "#01BAEF", //"#4BA3D3",
     d: "#E83F6F"
     // e: "#FFBC42",
   },

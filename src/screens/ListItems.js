@@ -123,6 +123,7 @@ class ListItems extends React.Component {
           style={styles.list_view}
           dataSource={this.state.dataSource}
           renderRow={this.handleRenderRow}
+          contentContainerStyle={styles.list_view_container}
         />
       </View>
     );
@@ -141,8 +142,10 @@ const styles = StyleSheet.create({
   list_view: {
     flex: 1,
     paddingTop: 10,
-    paddingBottom: 250,
     marginTop: 0
+  },
+  list_view_container: {
+    paddingBottom: 50
   },
   no_items_state: {
     flex: 1,
