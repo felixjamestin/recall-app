@@ -115,8 +115,8 @@ const styles = StyleSheet.create({
     justifyContent: "center"
   },
   show_add_item__button_container: {
-    height: 52,
-    width: 52,
+    height: 55,
+    width: 55,
     borderRadius: 25,
     elevation: 7
   },

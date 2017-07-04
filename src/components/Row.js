@@ -25,6 +25,10 @@ class Row extends React.PureComponent {
   /*--------------------------------------------------
     Lifecycle events
   ----------------------------------------------------*/
+  componentWillUpdate(nextProps, nextState) {
+    this.resetRowHeight(nextProps.rowData.delete, this.props.rowData.delete);
+  }
+
   componentDidUpdate(prevProps, prevState) {
     this.handleAddAnimation(prevProps.rowID);
   }
@@ -39,8 +43,8 @@ class Row extends React.PureComponent {
     Animated.timing(this.animatedValueScaleIn, {
       toValue: 1,
       duration: 500,
-      delay: 900,
-      easing: Easing.in(),
+      delay: 800,
+      easing: Easing.elastic(1),
       useNativeDriver: false
     }).start();
 
@@ -53,14 +57,14 @@ class Row extends React.PureComponent {
     });
   }
 
-  handleDeleteAnimation(onDeleteAnimationComplete) {
+  handleDeleteAnimation(callback) {
     Animated.timing(this.animatedValueHeight, {
       toValue: 0,
       duration: 200,
       easing: Easing.ease,
       delay: 0,
       useNativeDriver: false
-    }).start(onDeleteAnimationComplete);
+    }).start(callback);
   }
 
   determineRowHeight(event) {
@@ -80,11 +84,21 @@ class Row extends React.PureComponent {
     return titleStyle;
   }
 
+  skipRenderForDeletedRow() {
+    return this.props.rowData.delete === true;
+  }
+
+  resetRowHeight(oldDeleteValue, newDeleteValue) {
+    if (oldDeleteValue === false && newDeleteValue === true) {
+      this.animatedValueHeight.setValue(1); //Reset height if row was used by a deleted item before
+    }
+  }
+
   /*--------------------------------------------------
     Render UI
   ----------------------------------------------------*/
   render() {
-    if (this.props.rowData.delete === true) return null; TODO:
+    if (this.skipRenderForDeletedRow() === true) return null;
 
     return (
       <AnimatedSwipeable
@@ -110,7 +124,6 @@ class Row extends React.PureComponent {
           this.setState({ wasDeleteActionActivated: false })}
         onRightActionComplete={() => this.handleDeleteRow()}
       >
-
         <Animated.View
           style={[
             styles.row,
@@ -137,19 +150,18 @@ class Row extends React.PureComponent {
             {this.props.rowData.value}
           </Text>
         </Animated.View>
-
       </AnimatedSwipeable>
     );
   }
 
   renderDeleteAction(direction) {
-    const styleDirection = direction === "left"
-      ? styles.row_action_swipe_left
-      : styles.row_action_swipe_right;
+    const styleDirection =
+      direction === "left"
+        ? styles.row_action_swipe_left
+        : styles.row_action_swipe_right;
 
     return (
       <View style={styles.row_action_swipe}>
-
         {this.state.wasDeleteActionActivated
           ? <Image
               source={require("./../../assets/images/delete_row_active.png")}
@@ -159,7 +171,6 @@ class Row extends React.PureComponent {
               source={require("./../../assets/images/delete_row.png")}
               style={styleDirection}
             />}
-
       </View>
     );
   }

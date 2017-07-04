@@ -362,7 +362,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 5,
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
-    marginTop: 5, //20
+    marginTop: 20, // 5
     elevation: 5
   },
   modal_sub_container: {

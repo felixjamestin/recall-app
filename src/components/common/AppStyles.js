@@ -12,18 +12,18 @@ const AppStyles = {
     a: "#774CC5",
     b: "#02C39A",
     c: "#01BAEF", //"#4BA3D3",
-    d: "#E83F6F"
-    // e: "#FFBC42",
+    d: "#E83F6F",
+    e: "#0081AF" //#FFBC42",
   },
   rowColors1: {
-    violet: "#774CC5",
-    turquoise: "#4BA3D3"
+    a: "#774CC5",
+    b: "#4BA3D3"
   },
   rowColors2: {
-    violet: "#774CC5",
-    turquoise: "#4BA3D3",
-    blue: "#2541B2",
-    green: "#02C39A"
+    a: "#774CC5",
+    b: "#4BA3D3",
+    c: "#2541B2",
+    d: "#02C39A"
   },
   rowColors3: {
     a: "#20BF55",

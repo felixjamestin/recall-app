@@ -163,14 +163,10 @@ class Items extends React.Component {
     this.analytics.identify({
       userId: DeviceInfo.getUniqueID(),
       traits: {
-        name: "John",
-        lastname: "Doe",
-        email: "user@domain.com",
-        plan: "Enterprise",
-        device_manufacturer: DeviceInfo.getManufacturer(),
-        device_model: DeviceInfo.getModel(),
-        system_name: DeviceInfo.getSystemName(),
-        system_version: DeviceInfo.getSystemVersion()
+        deviceManufacturer: DeviceInfo.getManufacturer(),
+        deviceModel: DeviceInfo.getModel(),
+        systemName: DeviceInfo.getSystemName(),
+        systemVersion: DeviceInfo.getSystemVersion()
       }
     });
   }
@@ -181,7 +177,7 @@ class Items extends React.Component {
     });
 
     this.analytics.track({
-      userId: 1234,
+      userId: DeviceInfo.getUniqueID(),
       event: "Item Purchased",
       properties: {
         revenue: 39.95,
@@ -190,7 +186,7 @@ class Items extends React.Component {
     });
 
     this.analytics.screen({
-      userId: 1234,
+      userId: DeviceInfo.getUniqueID(),
       name: "products_list",
       properties: {
         order: "ASC",
