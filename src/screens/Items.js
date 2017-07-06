@@ -1,10 +1,12 @@
 import React from "react";
 import { View, AsyncStorage, StatusBar } from "react-native";
-import Analytics from "analytics-react-native";
-import DeviceInfo from "react-native-device-info";
 import { AddItem, ListItems } from "./Index";
 import { Item, AddItemsButton } from "./../components/Index";
-import { AppStyles, ColorHelper } from "./../components/common/Index";
+import {
+  AppStyles,
+  ColorHelper,
+  AnalyticsHelper
+} from "./../components/common/Index";
 
 class Items extends React.Component {
   static navigationOptions = {
@@ -70,7 +72,7 @@ class Items extends React.Component {
     this.items = [];
 
     // Setup analytics
-    this.initAnalytics();
+    AnalyticsHelper.initialize();
 
     // Initialize React state
     this.state = {
@@ -132,6 +134,11 @@ class Items extends React.Component {
 
   handleItemDeletion(rowID, key) {
     this.setStateHandler(this.getActionEnum().delete, { rowID, key });
+
+    AnalyticsHelper.trackEvent({
+      name: "delete_item-deleted",
+      value: this.items[rowID].value
+    });
   }
 
   storeLocalData() {
@@ -157,42 +164,13 @@ class Items extends React.Component {
     });
   }
 
-  initAnalytics() {
-    this.analytics = new Analytics("eBKRXNvJYOijzVT1nEtGuF980JMNqQJv");
-
-    this.analytics.identify({
-      userId: DeviceInfo.getUniqueID(),
-      traits: {
-        deviceManufacturer: DeviceInfo.getManufacturer(),
-        deviceModel: DeviceInfo.getModel(),
-        systemName: DeviceInfo.getSystemName(),
-        systemVersion: DeviceInfo.getSystemVersion()
-      }
-    });
-  }
-
   handleShowAddItem() {
     this.setStateHandler(this.getActionEnum().set, {
       showAddItem: true
     });
 
-    this.analytics.track({
-      userId: DeviceInfo.getUniqueID(),
-      event: "Item Purchased",
-      properties: {
-        revenue: 39.95,
-        shippingMethod: "2-day"
-      }
-    });
-
-    this.analytics.screen({
-      userId: DeviceInfo.getUniqueID(),
-      name: "products_list",
-      properties: {
-        order: "ASC",
-        page: 2
-        // And any other data about this screen
-      }
+    AnalyticsHelper.trackEvent({
+      name: "list_item-shown"
     });
   }
 

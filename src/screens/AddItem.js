@@ -12,7 +12,11 @@ import {
 } from "react-native";
 import Modal from "react-native-modalbox";
 import Chroma from "chroma-js";
-import { AppStyles, ColorHelper } from "./../components/common/Index";
+import {
+  AppStyles,
+  ColorHelper,
+  AnalyticsHelper
+} from "./../components/common/Index";
 
 const AnimatedModal = Animated.createAnimatedComponent(Modal);
 const AnimatedTouchableHighlight = Animated.createAnimatedComponent(
@@ -88,6 +92,10 @@ class AddItem extends React.Component {
   }
 
   handleClose() {
+    AnalyticsHelper.trackScreen({
+      name: "list_item_screen"
+    });
+
     this.props.onClose();
   }
 
@@ -99,6 +107,11 @@ class AddItem extends React.Component {
     if (this.state.addItemValue === "") return;
 
     ColorHelper.incrementColors();
+
+    AnalyticsHelper.trackEvent({
+      name: "add_item-saved",
+      value: this.state.addItemValue
+    });
 
     // Pass state to higher-order component
     this.props.onItemAddition(this.state.addItemValue);
@@ -243,9 +256,14 @@ class AddItem extends React.Component {
       this.state.addItemValue
     );
 
+    if (this.props.isVisible === true) {
+      AnalyticsHelper.trackScreen({
+        name: "add_item_screen"
+      });
+    }
+
     return (
       <View style={styles.container}>
-
         <AnimatedModal
           style={[styles.modal, animatedStyle.modal]}
           isOpen={this.props.isVisible}
@@ -265,7 +283,6 @@ class AddItem extends React.Component {
             style={styles.pulldown}
           />
           <View style={styles.modal_sub_container}>
-
             <KeyboardAvoidingView
               style={styles.add_item__container}
               behavior="padding"
@@ -334,9 +351,7 @@ class AddItem extends React.Component {
               }
             ]}
           />
-
         </AnimatedModal>
-
       </View>
     );
   }
