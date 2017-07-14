@@ -35,7 +35,7 @@ class AddItem extends React.Component {
     // Initialize state
     this.state = {
       addItemValue: "",
-      addItemReminder: null,
+      addItemReminder: "",
       isDisabled: false,
       swipeToClose: true
     };

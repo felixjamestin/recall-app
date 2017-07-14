@@ -1,7 +1,7 @@
 import React from "react";
-import { View, Text, Image, StyleSheet, Animated, Easing } from "react-native";
+import { View, Image, StyleSheet, Animated, Easing } from "react-native";
 import Swipeable from "react-native-swipeable";
-import Moment from "moment";
+import { RowText, ReminderText } from "./Index";
 import { AppStyles } from "./../components/common/Index";
 
 const AnimatedSwipeable = Animated.createAnimatedComponent(Swipeable);
@@ -20,7 +20,6 @@ class Row extends React.PureComponent {
     // Bindings
     this.handleDeleteRow = this.handleDeleteRow.bind(this);
     this.determineRowHeight = this.determineRowHeight.bind(this);
-    this.getDynamicStylesForTitle = this.getDynamicStylesForTitle.bind(this);
   }
 
   /*--------------------------------------------------
@@ -70,19 +69,6 @@ class Row extends React.PureComponent {
 
   determineRowHeight(event) {
     this.setState({ rowHeight: Math.floor(event.nativeEvent.layout.height) });
-  }
-
-  getDynamicStylesForTitle(text) {
-    let titleStyle = styles.item_title_large;
-
-    const textLength = text.length;
-    if (textLength > 55) {
-      titleStyle = styles.item_title_small;
-    } else if (textLength > 40) {
-      titleStyle = styles.item_title_medium;
-    }
-
-    return titleStyle;
   }
 
   skipRenderForDeletedRow() {
@@ -142,18 +128,8 @@ class Row extends React.PureComponent {
           ]}
           onLayout={this.determineRowHeight}
         >
-          <Text
-            style={[
-              styles.item_title_base,
-              this.getDynamicStylesForTitle(this.props.rowData.value)
-            ]}
-          >
-            {this.props.rowData.value}
-          </Text>
-          <Text style={styles.item_reminder}>
-            {Moment(this.props.rowData.reminder).calendar()}{" "}
-            {/* Moment(this.props.rowData.reminder).format("ddd, Do MMM, hA") */}
-          </Text>
+          <RowText text={this.props.rowData.value} />
+          <ReminderText reminderDate={this.props.rowData.reminder} />
         </Animated.View>
       </AnimatedSwipeable>
     );
@@ -188,34 +164,11 @@ const styles = StyleSheet.create({
   row: {
     borderRadius: 5,
     paddingHorizontal: 33,
-    paddingTop: 42,
-    paddingBottom: 45,
+    paddingTop: 25,
+    paddingBottom: 25,
     marginVertical: 3,
     marginHorizontal: 16,
     minHeight: 125
-  },
-  item_title_base: {
-    fontFamily: "Overpass-Regular",
-    color: "white"
-  },
-  item_title_large: {
-    fontSize: 22,
-    lineHeight: 36
-  },
-  item_title_medium: {
-    fontSize: 16,
-    lineHeight: 28,
-    paddingRight: 20
-  },
-  item_title_small: {
-    fontSize: 16,
-    lineHeight: 28,
-    paddingRight: 20
-  },
-  item_reminder: {
-    fontSize: 12,
-    color: "white",
-    opacity: 0.7
   },
   row_action_button: {
     backgroundColor: AppStyles.colors.redSecondary,
@@ -246,4 +199,7 @@ const styles = StyleSheet.create({
   }
 });
 
+/*--------------------------------------------------
+  Exports
+----------------------------------------------------*/
 export { Row };
