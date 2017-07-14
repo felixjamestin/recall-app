@@ -7,7 +7,11 @@ import {
   Animated,
   Easing
 } from "react-native";
+import PropTypes from "prop-types";
 
+/*--------------------------------------------------
+  Component
+----------------------------------------------------*/
 class AddItemsButton extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -41,7 +45,6 @@ class AddItemsButton extends React.PureComponent {
       duration: 300,
       easing: Easing.elastic(1.2),
       delay: 0
-      // useNativeDriver: true
     }).start();
 
     this.props.onAnimateAddButtonComplete();
@@ -52,7 +55,6 @@ class AddItemsButton extends React.PureComponent {
 
     const animatedStyleScaleIn = {
       transform: [
-        // { scale: this.animatedValueScaleIn },
         {
           translateY: this.animatedValueScaleIn.interpolate({
             inputRange: [0, 1],
@@ -125,6 +127,16 @@ const styles = StyleSheet.create({
     marginBottom: 10
   }
 });
+
+/*--------------------------------------------------
+  Props
+----------------------------------------------------*/
+AddItemsButton.propTypes = {
+  isVisible: PropTypes.bool.isRequired,
+  onItemAddition: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
+  wereItemsFetched: PropTypes.bool.isRequired
+};
 
 /*---------------------------------------------------
   Exports

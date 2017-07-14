@@ -10,6 +10,7 @@ import {
   Animated,
   KeyboardAvoidingView
 } from "react-native";
+import PropTypes from "prop-types";
 import Modal from "react-native-modalbox";
 import Chroma from "chroma-js";
 import {
@@ -17,12 +18,16 @@ import {
   ColorHelper,
   AnalyticsHelper
 } from "./../components/common/Index";
+import { Reminders } from "../components/Index";
 
 const AnimatedModal = Animated.createAnimatedComponent(Modal);
 const AnimatedTouchableHighlight = Animated.createAnimatedComponent(
   TouchableHighlight
 );
 
+/*--------------------------------------------------
+  Component
+----------------------------------------------------*/
 class AddItem extends React.Component {
   constructor(props) {
     super(props);
@@ -30,6 +35,7 @@ class AddItem extends React.Component {
     // Initialize state
     this.state = {
       addItemValue: "",
+      addItemReminder: null,
       isDisabled: false,
       swipeToClose: true
     };
@@ -46,6 +52,7 @@ class AddItem extends React.Component {
     this.handleModalVisibility = this.handleModalVisibility.bind(this);
     this.handleBackPress = this.handleBackPress.bind(this);
     this.handleClose = this.handleClose.bind(this);
+    this.handleAddReminder = this.handleAddReminder.bind(this);
   }
 
   /*--------------------------------------------------
@@ -59,7 +66,7 @@ class AddItem extends React.Component {
     const stateCheck = this.state.addItemValue !== nextState.addItemValue;
     const propCheck =
       this.props.isVisible !== nextProps.isVisible ||
-      nextProps.itemsFetched === true;
+      nextProps.wereItemsFetched === true;
     return stateCheck || propCheck;
   }
 
@@ -114,11 +121,18 @@ class AddItem extends React.Component {
     });
 
     // Pass state to higher-order component
-    this.props.onItemAddition(this.state.addItemValue);
+    this.props.onItemAddition(
+      this.state.addItemValue,
+      this.state.addItemReminder
+    );
 
     // Set local state
-    this.setState({ addItemValue: "" });
+    this.setState({ addItemValue: "", addItemReminder: "" });
     this.checkItemSaved = true;
+  }
+
+  handleAddReminder(reminder) {
+    this.state.addItemReminder = reminder;
   }
 
   startColorChangeAnimation() {
@@ -252,9 +266,6 @@ class AddItem extends React.Component {
   ----------------------------------------------------*/
   render() {
     const animatedStyle = this.getAnimationStyles();
-    const addItemTextStyle = this.getDynamicStylesForAddItemText(
-      this.state.addItemValue
-    );
 
     if (this.props.isVisible === true) {
       AnalyticsHelper.trackScreen({
@@ -278,81 +289,114 @@ class AddItem extends React.Component {
           backdropPressToClose={false}
           startOpen
         >
-          <Image
-            source={require("./../../assets/images/pulldown.png")}
-            style={styles.pulldown}
-          />
-          <View style={styles.modal_sub_container}>
-            <KeyboardAvoidingView
-              style={styles.add_item__container}
-              behavior="padding"
-            >
-              <Animated.Text
-                style={[styles.add_item__title, animatedStyle.add_item__title]}
-              >
-                Remind me to
-              </Animated.Text>
-
-              <TextInput
-                style={[styles.add_item__text, addItemTextStyle]}
-                value={this.state.addItemValue}
-                onChange={this.handleChange}
-                onSubmitEditing={this.handleSave}
-                blurOnSubmit={false}
-                returnKeyType="done"
-                autoCapitalize="sentences"
-                multiline
-                numberOfLines={3}
-                autoFocus
-                placeholder="buy milk & bread"
-                placeholderTextColor="rgba(255, 255, 255, .3)"
-                underlineColorAndroid="transparent"
-                caretHidden={false}
-                selectionColor="rgba(255, 255, 255, 0.3)"
-              />
-            </KeyboardAvoidingView>
-          </View>
-
-          <AnimatedTouchableHighlight
-            style={[
-              styles.add_item_save__button,
-              animatedStyle.add_item_save__button,
-              {
-                transform: [{ translateY: this.revealSaveActionAnimatedValue }]
-              }
-            ]}
-            onPress={this.handleSave}
-            activeOpacity={1}
-            underlayColor={"rgba(0, 0, 0, 0.3)"}
-          >
-            <Text style={styles.add_item_save__title}>Save item</Text>
-          </AnimatedTouchableHighlight>
-
-          <Animated.Image
-            source={require("./../../assets/images/add_item_sucess.gif")}
-            style={[
-              styles.save_feedback,
-              {
-                opacity: this.saveFeedbackAnimatedValue,
-                transform: [
-                  // {
-                  //   scale: this.saveFeedbackAnimatedValue.interpolate({
-                  //     inputRange: [0, 0.4],
-                  //     outputRange: [0, 1]
-                  //   })
-                  // },
-                  {
-                    translateX: this.saveFeedbackAnimatedValue.interpolate({
-                      inputRange: [0, 0.4],
-                      outputRange: [-25, -10]
-                    })
-                  }
-                ]
-              }
-            ]}
-          />
+          {this.renderPullDown()}
+          {this.renderItemDescription()}
+          {this.renderReminders()}
+          {this.renderSaveButton()}
+          {this.renderSaveFeedbackAnimation()}
         </AnimatedModal>
       </View>
+    );
+  }
+
+  renderItemDescription() {
+    const animatedStyle = this.getAnimationStyles();
+    const addItemTextStyle = this.getDynamicStylesForAddItemText(
+      this.state.addItemValue
+    );
+
+    return (
+      <View style={styles.modal_sub_container}>
+        <KeyboardAvoidingView
+          style={styles.add_item__container}
+          behavior="padding"
+        >
+          <Animated.Text
+            style={[styles.add_item__title, animatedStyle.add_item__title]}
+          >
+            Remind me to
+          </Animated.Text>
+
+          <TextInput
+            style={[styles.add_item__text, addItemTextStyle]}
+            value={this.state.addItemValue}
+            onChange={this.handleChange}
+            onSubmitEditing={this.handleSave}
+            blurOnSubmit={false}
+            returnKeyType="done"
+            autoCapitalize="sentences"
+            multiline
+            numberOfLines={3}
+            autoFocus
+            placeholder="buy milk & bread"
+            placeholderTextColor="rgba(255, 255, 255, .3)"
+            underlineColorAndroid="transparent"
+            caretHidden={false}
+            selectionColor="rgba(255, 255, 255, 0.3)"
+          />
+        </KeyboardAvoidingView>
+      </View>
+    );
+  }
+
+  renderSaveButton() {
+    const animatedStyle = this.getAnimationStyles();
+
+    return (
+      <AnimatedTouchableHighlight
+        style={[
+          styles.add_item_save__button,
+          animatedStyle.add_item_save__button,
+          {
+            transform: [{ translateY: this.revealSaveActionAnimatedValue }]
+          }
+        ]}
+        onPress={this.handleSave}
+        activeOpacity={1}
+        underlayColor={"rgba(0, 0, 0, 0.3)"}
+      >
+        <Text style={styles.add_item_save__title}>Save item</Text>
+      </AnimatedTouchableHighlight>
+    );
+  }
+
+  renderPullDown() {
+    return (
+      <Image
+        source={require("./../../assets/images/pulldown.png")}
+        style={styles.pulldown}
+      />
+    );
+  }
+
+  renderReminders() {
+    return (
+      <Reminders
+        style={styles.reminders}
+        onAddReminder={this.handleAddReminder}
+      />
+    );
+  }
+
+  renderSaveFeedbackAnimation() {
+    return (
+      <Animated.Image
+        source={require("./../../assets/images/add_item_sucess.gif")}
+        style={[
+          styles.save_feedback,
+          {
+            opacity: this.saveFeedbackAnimatedValue,
+            transform: [
+              {
+                translateX: this.saveFeedbackAnimatedValue.interpolate({
+                  inputRange: [0, 0.4],
+                  outputRange: [-25, -10]
+                })
+              }
+            ]
+          }
+        ]}
+      />
     );
   }
 }
@@ -381,24 +425,27 @@ const styles = StyleSheet.create({
     elevation: 5
   },
   modal_sub_container: {
-    flex: 1,
-    paddingHorizontal: 35,
-    paddingTop: 0,
-    paddingBottom: 10,
+    flex: 4,
     justifyContent: "center",
     alignItems: "center"
+  },
+  reminders: {
+    flex: 1,
+    alignItems: "flex-start"
   },
   add_item__container: {
     alignSelf: "flex-start",
     alignItems: "flex-start",
-    flexWrap: "wrap"
+    flexWrap: "wrap",
+    paddingHorizontal: 35,
+    paddingVertical: 0
   },
   add_item__title: {
     flex: 0,
     color: Chroma(AppStyles.colors.redPrimary).darken(1.5),
     fontSize: 16,
     fontFamily: "Overpass-SemiBold",
-    marginTop: 90,
+    marginTop: 70,
     marginBottom: -8,
     padding: 0
   },
@@ -407,7 +454,7 @@ const styles = StyleSheet.create({
     margin: 0,
     marginLeft: -6,
     width: 300,
-    fontSize: 46,
+    fontSize: 36, //46,
     fontFamily: "Overpass-Regular",
     color: "white",
     fontWeight: "100",
@@ -458,6 +505,16 @@ const styles = StyleSheet.create({
     opacity: 0.8
   }
 });
+
+/*--------------------------------------------------
+  Props
+----------------------------------------------------*/
+AddItem.propTypes = {
+  isVisible: PropTypes.bool.isRequired,
+  onItemAddition: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
+  wereItemsFetched: PropTypes.bool.isRequired
+};
 
 /*--------------------------------------------------
     Exports

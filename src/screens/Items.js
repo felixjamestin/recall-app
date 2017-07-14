@@ -8,6 +8,9 @@ import {
   AnalyticsHelper
 } from "./../components/common/Index";
 
+/*--------------------------------------------------
+  Component
+----------------------------------------------------*/
 class Items extends React.Component {
   static navigationOptions = {
     title: "Items",
@@ -38,7 +41,7 @@ class Items extends React.Component {
     Lifecycle events
   ----------------------------------------------------*/
   componentDidUpdate() {
-    this.itemsFetched = false;
+    this.wereItemsFetched = false;
   }
 
   /*--------------------------------------------------
@@ -68,7 +71,7 @@ class Items extends React.Component {
 
   doInitialization() {
     // Initialize instance state
-    this.itemsFetched = false;
+    this.wereItemsFetched = false;
     this.items = [];
 
     // Setup analytics
@@ -89,14 +92,14 @@ class Items extends React.Component {
       {
         key: Date.now(),
         value: params.addItemValue,
+        reminder: params.addItemReminder,
         selected: false,
         delete: false,
         createdAt: new Date(),
         bgColor: ColorHelper.getColorForRow({
           incrementColors: false
         }),
-        contentType: "text",
-        alarms: []
+        contentType: "text"
       },
       ...this.items
     ];
@@ -123,11 +126,13 @@ class Items extends React.Component {
     this.setState(params);
   }
 
-  handleItemAddition(value) {
+  handleItemAddition(value, reminder) {
     if (!value) return;
-    this.setStateHandler(this.getActionEnum().add, { addItemValue: value });
+    this.setStateHandler(this.getActionEnum().add, {
+      addItemValue: value,
+      addItemReminder: reminder
+    });
     this.setStateHandler(this.getActionEnum().set, {
-      addItemValue: "",
       animateRow: true
     });
   }
@@ -154,7 +159,7 @@ class Items extends React.Component {
         if (json) {
           this.items = JSON.parse(json);
           this.setupColorIndex();
-          this.itemsFetched = true;
+          this.wereItemsFetched = true;
 
           this.setState({ actionPerformed: this.getActionEnum().init });
         }
@@ -239,7 +244,7 @@ class Items extends React.Component {
           isVisible={this.state.showAddItem}
           onItemAddition={this.handleItemAddition}
           onClose={this.handleCloseAddItem}
-          itemsFetched={this.itemsFetched}
+          wereItemsFetched={this.wereItemsFetched}
         />
       </View>
     );

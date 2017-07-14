@@ -1,9 +1,13 @@
 import React from "react";
 import { View, Image, Text, ListView, StyleSheet } from "react-native";
+import PropTypes from "prop-types";
 import Chroma from "chroma-js";
 import { Row } from "./../components/Index";
 import { AppStyles } from "./../components/common/Index";
 
+/*--------------------------------------------------
+  Component
+----------------------------------------------------*/
 class ListItems extends React.Component {
   constructor(props) {
     super(props);
@@ -166,6 +170,19 @@ const styles = StyleSheet.create({
     marginTop: 2
   }
 });
+
+/*--------------------------------------------------
+  Props
+----------------------------------------------------*/
+ListItems.propTypes = {
+  items: PropTypes.object.isRequired,
+  isAddItemVisible: PropTypes.bool.isRequired,
+  shouldAnimateRow: PropTypes.bool.isRequired,
+  shouldAnimateAddButton: PropTypes.bool.isRequired,
+  onItemDelete: PropTypes.func.isRequired,
+  onAnimateAddButtonComplete: PropTypes.func.isRequired,
+  onAnimateRowComplete: PropTypes.func.isRequired
+};
 
 /*--------------------------------------------------
     Exports

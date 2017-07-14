@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, Image, StyleSheet, Animated, Easing } from "react-native";
 import Swipeable from "react-native-swipeable";
+import Moment from "moment";
 import { AppStyles } from "./../components/common/Index";
 
 const AnimatedSwipeable = Animated.createAnimatedComponent(Swipeable);
@@ -149,6 +150,10 @@ class Row extends React.PureComponent {
           >
             {this.props.rowData.value}
           </Text>
+          <Text style={styles.item_reminder}>
+            {Moment(this.props.rowData.reminder).calendar()}{" "}
+            {/* Moment(this.props.rowData.reminder).format("ddd, Do MMM, hA") */}
+          </Text>
         </Animated.View>
       </AnimatedSwipeable>
     );
@@ -206,6 +211,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 28,
     paddingRight: 20
+  },
+  item_reminder: {
+    fontSize: 12,
+    color: "white",
+    opacity: 0.7
   },
   row_action_button: {
     backgroundColor: AppStyles.colors.redSecondary,
