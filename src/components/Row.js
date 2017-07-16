@@ -164,11 +164,9 @@ const styles = StyleSheet.create({
   row: {
     borderRadius: 5,
     paddingHorizontal: 33,
-    paddingTop: 30,
-    paddingBottom: 25,
     marginVertical: 3,
     marginHorizontal: 16,
-    minHeight: 125
+    minHeight: 120
   },
   row_action_button: {
     backgroundColor: AppStyles.colors.redSecondary,

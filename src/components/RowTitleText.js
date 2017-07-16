@@ -50,7 +50,8 @@ const styles = StyleSheet.create({
   item_title_base: {
     fontFamily: "Overpass-Regular",
     color: "white",
-    paddingBottom: 20
+    paddingTop: 30,
+    paddingBottom: 30
   },
   item_title_large: {
     fontSize: 22,
