@@ -422,18 +422,21 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
     marginTop: 20, // 5
-    elevation: 5
+    elevation: 50
   },
   modal_sub_container: {
-    flex: 4,
+    flex: 2,
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
+    marginTop: 80
   },
   reminders: {
-    flex: 1,
+    flex: 0,
+    justifyContent: "center",
     alignItems: "flex-start"
   },
   add_item__container: {
+    justifyContent: "center",
     alignSelf: "flex-start",
     alignItems: "flex-start",
     flexWrap: "wrap",
@@ -445,16 +448,15 @@ const styles = StyleSheet.create({
     color: Chroma(AppStyles.colors.redPrimary).darken(1.5),
     fontSize: 16,
     fontFamily: "Overpass-SemiBold",
-    marginTop: 70,
     marginBottom: -8,
     padding: 0
   },
   add_item__text: {
-    flex: 1,
+    flex: 4,
     margin: 0,
     marginLeft: -6,
     width: 300,
-    fontSize: 36, //46,
+    fontSize: 34, //46,
     fontFamily: "Overpass-Regular",
     color: "white",
     fontWeight: "100",
@@ -462,7 +464,7 @@ const styles = StyleSheet.create({
     maxHeight: 170
   },
   add_item__text_small: {
-    fontSize: 32,
+    fontSize: 26,
     marginRight: 50
   },
   add_item_save__button: {

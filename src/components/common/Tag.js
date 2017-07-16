@@ -54,25 +54,25 @@ class Tag extends React.PureComponent {
 const styles = StyleSheet.create({
   container: {
     marginVertical: 0,
-    marginHorizontal: 5
+    marginHorizontal: 0,
+    marginLeft: -6
   },
   tag_body: {
-    backgroundColor: "rgba(0, 0, 0, .08)", //"rgba(255, 255, 255, .2)"
-    borderRadius: 5,
-    paddingVertical: 11,
-    paddingHorizontal: 17
+    borderRadius: 100,
+    paddingVertical: 8,
+    paddingHorizontal: 13
   },
   tag_body_selected: {
-    opacity: 1,
-    backgroundColor: "rgba(255, 255, 255, 1)"
+    borderRadius: 100,
+    opacity: 1
   },
   tag_text: {
-    fontSize: 13,
+    fontSize: 15,
     fontFamily: "Overpass-SemiBold",
-    color: "rgba(255, 255, 255, .8)"
+    color: "rgba(255, 255, 255, .4)"
   },
   tag_text_selected: {
-    color: "rgba(0, 0, 0, .65)"
+    color: "rgba(255, 255, 255, .8)"
   }
 });
 
