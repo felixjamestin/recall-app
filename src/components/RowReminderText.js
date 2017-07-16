@@ -3,7 +3,7 @@ import { Text, StyleSheet, Image, View } from "react-native";
 import PropTypes from "prop-types";
 import Moment from "moment";
 
-class ReminderText extends React.PureComponent {
+class RowRowReminderText extends React.PureComponent {
   /*--------------------------------------------------
     Render UI
   ----------------------------------------------------*/
@@ -55,11 +55,11 @@ const styles = StyleSheet.create({
 /*--------------------------------------------------
   Props
 ----------------------------------------------------*/
-ReminderText.propTypes = {
+RowReminderText.propTypes = {
   reminderDate: PropTypes.object.isRequired
 };
 
 /*--------------------------------------------------
   Exports
 ----------------------------------------------------*/
-export { ReminderText };
+export { RowReminderText };

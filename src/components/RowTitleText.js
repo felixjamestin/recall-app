@@ -2,7 +2,7 @@ import React from "react";
 import { Text, StyleSheet } from "react-native";
 import PropTypes from "prop-types";
 
-class RowText extends React.PureComponent {
+class RowTitleText extends React.PureComponent {
   constructor(props) {
     super(props);
 
@@ -71,11 +71,11 @@ const styles = StyleSheet.create({
 /*--------------------------------------------------
   Props
 ----------------------------------------------------*/
-RowText.propTypes = {
+RowTitleText.propTypes = {
   text: PropTypes.string.isRequired
 };
 
 /*--------------------------------------------------
   Exports
 ----------------------------------------------------*/
-export { RowText };
+export { RowTitleText };

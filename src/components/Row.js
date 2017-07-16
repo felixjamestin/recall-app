@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Image, StyleSheet, Animated, Easing } from "react-native";
 import Swipeable from "react-native-swipeable";
-import { RowText, ReminderText } from "./Index";
+import { RowTitleText, RowReminderText } from "./Index";
 import { AppStyles } from "./../components/common/Index";
 
 const AnimatedSwipeable = Animated.createAnimatedComponent(Swipeable);
@@ -128,8 +128,8 @@ class Row extends React.PureComponent {
           ]}
           onLayout={this.determineRowHeight}
         >
-          <RowText text={this.props.rowData.value} />
-          <ReminderText reminderDate={this.props.rowData.reminder} />
+          <RowTitleText text={this.props.rowData.value} />
+          <RowReminderText reminderDate={this.props.rowData.reminder} />
         </Animated.View>
       </AnimatedSwipeable>
     );
@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
   row: {
     borderRadius: 5,
     paddingHorizontal: 33,
-    paddingTop: 25,
+    paddingTop: 30,
     paddingBottom: 25,
     marginVertical: 3,
     marginHorizontal: 16,
