@@ -47,29 +47,30 @@ class RowReminderText extends React.PureComponent {
 ----------------------------------------------------*/
 const styles = StyleSheet.create({
   item_reminder_container: {
-    flex: 1,
     flexDirection: "row",
     justifyContent: "flex-start",
     alignItems: "flex-start",
     paddingBottom: 10,
-    top: -7
+    top: -6
   },
   item_reminder_icon: {
+    width: 10,
+    height: 10,
     marginRight: 3,
     marginTop: 2,
-    opacity: 0.9
+    opacity: 0.8
   },
   item_reminder_text: {
     fontFamily: "Overpass-SemiBold",
-    fontSize: 12,
+    fontSize: 10,
     color: "white",
     opacity: 0.7
   },
   item_reminder_icon_expired: {
-    opacity: 0.5
+    opacity: 0.4
   },
   item_reminder_text_expired: {
-    opacity: 0.4
+    opacity: 0.3
   }
 });
 

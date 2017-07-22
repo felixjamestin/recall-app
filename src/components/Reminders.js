@@ -156,7 +156,9 @@ class Reminders extends React.PureComponent {
   Styles
 ----------------------------------------------------*/
 const styles = StyleSheet.create({
-  container: { paddingHorizontal: 28 }
+  container: {
+    paddingHorizontal: 28
+  }
 });
 
 /*--------------------------------------------------

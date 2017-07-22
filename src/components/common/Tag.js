@@ -72,7 +72,8 @@ const styles = StyleSheet.create({
   tag_body: {
     borderRadius: 100,
     paddingVertical: 8,
-    paddingHorizontal: 13
+    paddingHorizontal: 13,
+    top: -5
   },
   tag_body_selected: {
     borderRadius: 100,
@@ -84,7 +85,7 @@ const styles = StyleSheet.create({
     color: "rgba(255, 255, 255, .4)"
   },
   tag_text_selected: {
-    color: "rgba(255, 255, 255, .8)"
+    color: "rgba(255, 255, 255, 1)"
   }
 });
 

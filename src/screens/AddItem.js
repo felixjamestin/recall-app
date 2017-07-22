@@ -184,7 +184,6 @@ class AddItem extends React.Component {
     } else if (value === "") {
       this.animateHideReminders();
       this.animateHideSave({ delay: false });
-      this.checkItemChanged = false;
     }
   }
 
@@ -220,6 +219,7 @@ class AddItem extends React.Component {
         delay: 0,
         useNativeDriver: false
       }).start();
+      this.checkItemChanged = false;
     }, timeoutSecs);
   }
 
@@ -227,8 +227,8 @@ class AddItem extends React.Component {
     let textStyle = styles.add_item__text;
 
     const textLength = text.length;
-    if (textLength > 45) {
-      textStyle = styles.add_item__text_small;
+    if (textLength > 60) {
+      textStyle = styles.add_item__text_smaller;
     } else if (textLength > 30) {
       textStyle = styles.add_item__text_small;
     }
@@ -310,8 +310,10 @@ class AddItem extends React.Component {
           startOpen
         >
           {this.renderPullDown()}
-          {this.renderItemDescription()}
-          {this.renderReminders()}
+          <View style={styles.modal_sub_container}>
+            {this.renderItemDescription()}
+            {this.renderReminders()}
+          </View>
           {this.renderSaveButton()}
           {this.renderSaveFeedbackAnimation()}
         </AnimatedModal>
@@ -326,36 +328,34 @@ class AddItem extends React.Component {
     );
 
     return (
-      <View style={[styles.modal_sub_container]}>
-        <KeyboardAvoidingView
-          style={styles.add_item__container}
-          behavior="padding"
+      <KeyboardAvoidingView
+        style={styles.add_item__container}
+        behavior="padding"
+      >
+        <Animated.Text
+          style={[styles.add_item__title, animatedStyle.add_item__title]}
         >
-          <Animated.Text
-            style={[styles.add_item__title, animatedStyle.add_item__title]}
-          >
-            Remind me to
-          </Animated.Text>
+          Remind me to
+        </Animated.Text>
 
-          <TextInput
-            style={[styles.add_item__text, addItemTextStyle]}
-            value={this.state.addItemValue}
-            onChange={this.handleChange}
-            onSubmitEditing={this.handleSave}
-            blurOnSubmit={false}
-            returnKeyType="done"
-            autoCapitalize="sentences"
-            multiline
-            numberOfLines={3}
-            autoFocus
-            placeholder="buy milk & bread"
-            placeholderTextColor="rgba(255, 255, 255, .3)"
-            underlineColorAndroid="transparent"
-            caretHidden={false}
-            selectionColor="rgba(255, 255, 255, 0.3)"
-          />
-        </KeyboardAvoidingView>
-      </View>
+        <TextInput
+          style={[styles.add_item__text, addItemTextStyle]}
+          value={this.state.addItemValue}
+          onChange={this.handleChange}
+          onSubmitEditing={this.handleSave}
+          blurOnSubmit={false}
+          returnKeyType="done"
+          autoCapitalize="sentences"
+          multiline
+          numberOfLines={3}
+          autoFocus
+          placeholder="buy milk & bread"
+          placeholderTextColor="rgba(255, 255, 255, .3)"
+          underlineColorAndroid="transparent"
+          caretHidden={false}
+          selectionColor="rgba(255, 255, 255, 0.3)"
+        />
+      </KeyboardAvoidingView>
     );
   }
 
@@ -436,7 +436,7 @@ const styles = StyleSheet.create({
   },
   modal: {
     flex: 1,
-    justifyContent: "center",
+    justifyContent: "space-between",
     backgroundColor: AppStyles.colors.redPrimary,
     borderTopLeftRadius: 5,
     borderTopRightRadius: 5,
@@ -446,17 +446,14 @@ const styles = StyleSheet.create({
     elevation: 50
   },
   modal_sub_container: {
-    flex: 2,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 80
-  },
-  reminders: {
     flex: 0,
-    justifyContent: "center",
-    alignItems: "flex-start"
+    justifyContent: "flex-start",
+    alignItems: "center",
+    height: 140,
+    marginTop: 50
   },
   add_item__container: {
+    flex: 3,
     justifyContent: "center",
     alignSelf: "flex-start",
     alignItems: "flex-start",
@@ -465,7 +462,6 @@ const styles = StyleSheet.create({
     paddingVertical: 0
   },
   add_item__title: {
-    flex: 0,
     color: Chroma(AppStyles.colors.redPrimary).darken(1.5),
     fontSize: 16,
     fontFamily: "Overpass-SemiBold",
@@ -477,19 +473,23 @@ const styles = StyleSheet.create({
     margin: 0,
     marginLeft: -6,
     width: 300,
-    fontSize: 34, //46,
+    fontSize: 34,
     fontFamily: "Overpass-Regular",
     color: "white",
     fontWeight: "100",
     textAlignVertical: "top",
-    maxHeight: 170
+    maxHeight: 150
   },
   add_item__text_small: {
     fontSize: 26,
     marginRight: 50
   },
+  add_item__text_smaller: {
+    fontSize: 20,
+    marginRight: 100
+  },
+  reminders: {},
   add_item_save__button: {
-    alignSelf: "stretch",
     padding: 18,
     backgroundColor: AppStyles.colors.redSecondary,
     borderColor: "black",
@@ -520,6 +520,7 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
     marginRight: 20,
     marginBottom: -10,
+    justifyContent: "center",
     position: "absolute"
   },
   pulldown: {
