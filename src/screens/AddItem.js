@@ -54,6 +54,7 @@ class AddItem extends React.Component {
     this.colorChangeAnimationDriver = new Animated.Value(0);
     this.saveFeedbackAnimationDriver = new Animated.Value(0);
     this.revealSaveActionAnimationDriver = new Animated.Value(0);
+    this.changePositionAddItemTextAnimationDriver = new Animated.Value(60);
 
     // Bind handlers
     this.handleChange = this.handleChange.bind(this);
@@ -123,8 +124,8 @@ class AddItem extends React.Component {
     if (this.state.addItemValue === "") return;
 
     ColorHelper.incrementColors();
-    this.setupPushNotifications({
-      value: this.props.onItemAddition,
+    this.triggerPushNotifications({
+      value: this.state.addItemValue,
       reminder: this.state.addItemReminder
     });
 
@@ -139,6 +140,7 @@ class AddItem extends React.Component {
     this.checkItemSaved = true;
 
     this.animateHideReminders();
+    this.animateRevertPositionAddItemText();
 
     AnalyticsHelper.trackEvent({
       name: "add_item-saved",
@@ -146,10 +148,10 @@ class AddItem extends React.Component {
     });
   }
 
-  setupPushNotifications({ value, reminder } = {}) {
+  triggerPushNotifications({ value, reminder } = {}) {
     PushNotification.localNotificationSchedule({
-      message: "My Notification Message", // (required)
-      date: new Date(Date.now() + 60 * 1000) // in 60 secs //this.state.addItemReminder
+      message: value, // (required)
+      date: new Date(Date.now() + 0 * 1000) //reminder //new Date(Date.now() + 0 * 1000) // in 60 secs //this.state.addItemReminder
     });
   }
 
@@ -192,11 +194,36 @@ class AddItem extends React.Component {
     if (this.checkItemChanged !== true) {
       this.animateRevealReminders();
       this.animateRevealSave();
+      this.animatePositionAddItemText();
       this.checkItemChanged = true;
     } else if (value === "") {
+      this.animateRevertPositionAddItemText();
       this.animateHideReminders();
       this.animateHideSave({ delay: false });
     }
+  }
+
+  animatePositionAddItemText() {
+    this.changePositionAddItemTextAnimationDriver.setValue(60);
+    Animated.spring(this.changePositionAddItemTextAnimationDriver, {
+      toValue: 10,
+      duration: 50,
+      friction: 8,
+      tension: 100,
+      delay: 0,
+      useNativeDriver: false
+    }).start();
+  }
+
+  animateRevertPositionAddItemText() {
+    Animated.spring(this.changePositionAddItemTextAnimationDriver, {
+      toValue: 60,
+      duration: 50,
+      friction: 8,
+      tension: 100,
+      delay: 0,
+      useNativeDriver: false
+    }).start();
   }
 
   animateRevealReminders() {
@@ -322,10 +349,17 @@ class AddItem extends React.Component {
           startOpen
         >
           {this.renderPullDown()}
-          <View style={styles.modal_sub_container}>
+          <Animated.View
+            style={[
+              styles.modal_sub_container,
+              {
+                marginTop: this.changePositionAddItemTextAnimationDriver
+              }
+            ]}
+          >
             {this.renderItemDescription()}
             {this.renderReminders()}
-          </View>
+          </Animated.View>
           {this.renderSaveButton()}
           {this.renderSaveFeedbackAnimation()}
         </AnimatedModal>
