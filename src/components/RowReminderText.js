@@ -4,6 +4,10 @@ import PropTypes from "prop-types";
 import Moment from "moment";
 
 class RowReminderText extends React.PureComponent {
+  static propTypes = {
+    reminderDate: PropTypes.object.isRequired
+  };
+
   /*--------------------------------------------------
     Render UI
   ----------------------------------------------------*/
@@ -11,10 +15,6 @@ class RowReminderText extends React.PureComponent {
     const reminder = Moment(this.props.reminderDate).calendar().toUpperCase();
     const isReminderValid = Moment(this.props.reminderDate).isAfter();
     const isReminderExpired = isReminderValid ? false : true;
-
-    // const reminder = Moment(this.props.reminderDate).isAfter()
-    //   ? Moment(this.props.reminderDate).calendar().toUpperCase()
-    //   : "EXPIRED REMINDER";
 
     if (this.props.reminderDate.toString() === "") {
       return null;
@@ -72,13 +72,6 @@ const styles = StyleSheet.create({
     opacity: 0.4
   }
 });
-
-/*--------------------------------------------------
-  Props
-----------------------------------------------------*/
-RowReminderText.propTypes = {
-  reminderDate: PropTypes.object.isRequired
-};
 
 /*--------------------------------------------------
   Exports

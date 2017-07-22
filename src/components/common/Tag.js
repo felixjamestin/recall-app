@@ -1,12 +1,23 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Animated } from "react-native";
 import PropTypes from "prop-types";
 import Touchable from "react-native-platform-touchable";
+
+const AnimatedTouchable = Animated.createAnimatedComponent(Touchable);
 
 /*--------------------------------------------------
   Component
 ----------------------------------------------------*/
 class Tag extends React.PureComponent {
+  static propTypes = {
+    id: PropTypes.number.isRequired,
+    text: PropTypes.string.isRequired,
+    value: PropTypes.number.isRequired,
+    selected: PropTypes.bool,
+    onSelect: PropTypes.func.isRequired,
+    animationDriver: PropTypes.object.isRequired
+  };
+
   constructor(props) {
     super(props);
 
@@ -27,11 +38,12 @@ class Tag extends React.PureComponent {
   render() {
     return (
       <View key={this.props.id} style={styles.container}>
-        <Touchable
+        <AnimatedTouchable
           onPress={this.handleTagSelection}
           style={[
             styles.tag_body,
-            this.props.selected && styles.tag_body_selected
+            this.props.selected && styles.tag_body_selected,
+            { opacity: this.props.animationDriver }
           ]}
         >
           <Text
@@ -42,7 +54,7 @@ class Tag extends React.PureComponent {
           >
             {this.props.text}
           </Text>
-        </Touchable>
+        </AnimatedTouchable>
       </View>
     );
   }
@@ -67,7 +79,7 @@ const styles = StyleSheet.create({
     opacity: 1
   },
   tag_text: {
-    fontSize: 15,
+    fontSize: 16,
     fontFamily: "Overpass-SemiBold",
     color: "rgba(255, 255, 255, .4)"
   },
@@ -75,17 +87,6 @@ const styles = StyleSheet.create({
     color: "rgba(255, 255, 255, .8)"
   }
 });
-
-/*--------------------------------------------------
-  Props
-----------------------------------------------------*/
-Tag.propTypes = {
-  id: PropTypes.number.isRequired,
-  text: PropTypes.string.isRequired,
-  value: PropTypes.number.isRequired,
-  selected: PropTypes.bool,
-  onSelect: PropTypes.func.isRequired
-};
 
 /*--------------------------------------------------
   Exports

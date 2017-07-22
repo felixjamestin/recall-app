@@ -29,6 +29,13 @@ const AnimatedTouchableHighlight = Animated.createAnimatedComponent(
   Component
 ----------------------------------------------------*/
 class AddItem extends React.Component {
+  static propTypes = {
+    isVisible: PropTypes.bool.isRequired,
+    onItemAddition: PropTypes.func.isRequired,
+    onClose: PropTypes.func.isRequired,
+    wereItemsFetched: PropTypes.bool.isRequired
+  };
+
   constructor(props) {
     super(props);
 
@@ -37,14 +44,15 @@ class AddItem extends React.Component {
       addItemValue: "",
       addItemReminder: "",
       isDisabled: false,
-      swipeToClose: true
+      swipeToClose: true,
+      revealReminders: false
     };
 
     this.checkItemSaved = false;
     this.checkItemChanged = false;
-    this.colorChangeAnimatedValue = new Animated.Value(0);
-    this.saveFeedbackAnimatedValue = new Animated.Value(0);
-    this.revealSaveActionAnimatedValue = new Animated.Value(0);
+    this.colorChangeAnimationDriver = new Animated.Value(0);
+    this.saveFeedbackAnimationDriver = new Animated.Value(0);
+    this.revealSaveActionAnimationDriver = new Animated.Value(0);
 
     // Bind handlers
     this.handleChange = this.handleChange.bind(this);
@@ -75,7 +83,7 @@ class AddItem extends React.Component {
 
     this.startColorChangeAnimation();
     this.startSaveFeedbackAnimation();
-    this.startHideSaveAnimation();
+    this.animateHideSave();
 
     this.checkItemSaved = false;
   }
@@ -94,8 +102,8 @@ class AddItem extends React.Component {
   handleChange(event) {
     this.setState({ addItemValue: event.nativeEvent.text });
 
-    // Show/hide the save button
-    this.startToggleVisibilitySaveAnimation(event.nativeEvent.text);
+    // Start dependant animations – show tags, save button, etc
+    this.showDependantControls(event.nativeEvent.text);
   }
 
   handleClose() {
@@ -126,6 +134,8 @@ class AddItem extends React.Component {
       this.state.addItemReminder
     );
 
+    this.animateHideReminders();
+
     // Set local state
     this.setState({ addItemValue: "", addItemReminder: "" });
     this.checkItemSaved = true;
@@ -136,9 +146,9 @@ class AddItem extends React.Component {
   }
 
   startColorChangeAnimation() {
-    this.colorChangeAnimatedValue.setValue(0);
+    this.colorChangeAnimationDriver.setValue(0);
 
-    Animated.timing(this.colorChangeAnimatedValue, {
+    Animated.timing(this.colorChangeAnimationDriver, {
       toValue: 100,
       duration: 700,
       delay: 0,
@@ -147,9 +157,9 @@ class AddItem extends React.Component {
   }
 
   startSaveFeedbackAnimation() {
-    this.saveFeedbackAnimatedValue.setValue(0);
+    this.saveFeedbackAnimationDriver.setValue(0);
 
-    Animated.spring(this.saveFeedbackAnimatedValue, {
+    Animated.spring(this.saveFeedbackAnimationDriver, {
       toValue: 0.4,
       duration: 100,
       friction: 6,
@@ -157,7 +167,7 @@ class AddItem extends React.Component {
       delay: 0,
       useNativeDriver: true
     }).start(() => {
-      Animated.timing(this.saveFeedbackAnimatedValue, {
+      Animated.timing(this.saveFeedbackAnimationDriver, {
         toValue: 0,
         duration: 500,
         delay: 1000,
@@ -166,17 +176,29 @@ class AddItem extends React.Component {
     });
   }
 
-  startToggleVisibilitySaveAnimation(value) {
+  showDependantControls(value) {
     if (this.checkItemChanged !== true) {
-      this.startRevealSaveAnimation();
+      this.animateRevealReminders();
+      this.animateRevealSave();
+      this.checkItemChanged = true;
     } else if (value === "") {
-      this.startHideSaveAnimation({ delay: false });
+      this.animateHideReminders();
+      this.animateHideSave({ delay: false });
+      this.checkItemChanged = false;
     }
   }
 
-  startRevealSaveAnimation() {
-    this.revealSaveActionAnimatedValue.setValue(0);
-    Animated.spring(this.revealSaveActionAnimatedValue, {
+  animateRevealReminders() {
+    this.setState({ revealReminders: true });
+  }
+
+  animateHideReminders() {
+    this.setState({ revealReminders: false });
+  }
+
+  animateRevealSave() {
+    this.revealSaveActionAnimationDriver.setValue(0);
+    Animated.spring(this.revealSaveActionAnimationDriver, {
       toValue: -60,
       duration: 50,
       friction: 8,
@@ -184,14 +206,13 @@ class AddItem extends React.Component {
       delay: 0,
       useNativeDriver: false
     }).start();
-    this.checkItemChanged = true;
   }
 
-  startHideSaveAnimation({ delay = true } = {}) {
+  animateHideSave({ delay = true } = {}) {
     const timeoutSecs = delay === true ? 0 : 0;
 
     setTimeout(() => {
-      Animated.spring(this.revealSaveActionAnimatedValue, {
+      Animated.spring(this.revealSaveActionAnimationDriver, {
         toValue: 0,
         duration: 50,
         friction: 8,
@@ -199,7 +220,6 @@ class AddItem extends React.Component {
         delay: 0,
         useNativeDriver: false
       }).start();
-      this.checkItemChanged = false;
     }, timeoutSecs);
   }
 
@@ -223,15 +243,15 @@ class AddItem extends React.Component {
     const nextColorDark = Chroma(nextColor).darken(0.5).css();
     const nextColorDarker = Chroma(nextColor).darken(1.2).css();
 
-    const interpolateColor = this.colorChangeAnimatedValue.interpolate({
+    const interpolateColor = this.colorChangeAnimationDriver.interpolate({
       inputRange: [0, 100],
       outputRange: [currentColor, nextColor]
     });
-    const interpolateColorDark = this.colorChangeAnimatedValue.interpolate({
+    const interpolateColorDark = this.colorChangeAnimationDriver.interpolate({
       inputRange: [0, 100],
       outputRange: [currentColorDark, nextColorDark]
     });
-    const interpolateColorDarker = this.colorChangeAnimatedValue.interpolate({
+    const interpolateColorDarker = this.colorChangeAnimationDriver.interpolate({
       inputRange: [0, 100],
       outputRange: [currentColorDarker, nextColorDarker]
     });
@@ -306,7 +326,7 @@ class AddItem extends React.Component {
     );
 
     return (
-      <View style={styles.modal_sub_container}>
+      <View style={[styles.modal_sub_container]}>
         <KeyboardAvoidingView
           style={styles.add_item__container}
           behavior="padding"
@@ -348,7 +368,7 @@ class AddItem extends React.Component {
           styles.add_item_save__button,
           animatedStyle.add_item_save__button,
           {
-            transform: [{ translateY: this.revealSaveActionAnimatedValue }]
+            transform: [{ translateY: this.revealSaveActionAnimationDriver }]
           }
         ]}
         onPress={this.handleSave}
@@ -374,6 +394,7 @@ class AddItem extends React.Component {
       <Reminders
         style={styles.reminders}
         onAddReminder={this.handleAddReminder}
+        revealReminders={this.state.revealReminders}
       />
     );
   }
@@ -385,10 +406,10 @@ class AddItem extends React.Component {
         style={[
           styles.save_feedback,
           {
-            opacity: this.saveFeedbackAnimatedValue,
+            opacity: this.saveFeedbackAnimationDriver,
             transform: [
               {
-                translateX: this.saveFeedbackAnimatedValue.interpolate({
+                translateX: this.saveFeedbackAnimationDriver.interpolate({
                   inputRange: [0, 0.4],
                   outputRange: [-25, -10]
                 })
@@ -452,7 +473,7 @@ const styles = StyleSheet.create({
     padding: 0
   },
   add_item__text: {
-    flex: 4,
+    flex: 1,
     margin: 0,
     marginLeft: -6,
     width: 300,
@@ -507,16 +528,6 @@ const styles = StyleSheet.create({
     opacity: 0.8
   }
 });
-
-/*--------------------------------------------------
-  Props
-----------------------------------------------------*/
-AddItem.propTypes = {
-  isVisible: PropTypes.bool.isRequired,
-  onItemAddition: PropTypes.func.isRequired,
-  onClose: PropTypes.func.isRequired,
-  wereItemsFetched: PropTypes.bool.isRequired
-};
 
 /*--------------------------------------------------
     Exports

@@ -13,6 +13,13 @@ import PropTypes from "prop-types";
   Component
 ----------------------------------------------------*/
 class AddItemsButton extends React.PureComponent {
+  static propTypes = {
+    isVisible: PropTypes.bool.isRequired,
+    onItemAddition: PropTypes.func.isRequired,
+    onClose: PropTypes.func.isRequired,
+    wereItemsFetched: PropTypes.bool.isRequired
+  };
+
   constructor(props) {
     super(props);
     this.animatedValueScaleIn = new Animated.Value(0);
@@ -127,16 +134,6 @@ const styles = StyleSheet.create({
     marginBottom: 10
   }
 });
-
-/*--------------------------------------------------
-  Props
-----------------------------------------------------*/
-AddItemsButton.propTypes = {
-  isVisible: PropTypes.bool.isRequired,
-  onItemAddition: PropTypes.func.isRequired,
-  onClose: PropTypes.func.isRequired,
-  wereItemsFetched: PropTypes.bool.isRequired
-};
 
 /*---------------------------------------------------
   Exports

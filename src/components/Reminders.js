@@ -1,5 +1,5 @@
 import React from "react";
-import { ScrollView, StyleSheet } from "react-native";
+import { ScrollView, StyleSheet, Animated, Easing } from "react-native";
 import PropTypes from "prop-types";
 import Moment from "moment";
 import { Tag } from "./common/Tag";
@@ -10,6 +10,11 @@ require("datejs");
   Component
 ----------------------------------------------------*/
 class Reminders extends React.PureComponent {
+  static propTypes = {
+    onAddReminder: PropTypes.func.isRequired,
+    revealReminders: PropTypes.bool.isRequired
+  };
+
   constructor(props) {
     super(props);
 
@@ -22,26 +27,42 @@ class Reminders extends React.PureComponent {
       MON_MORNING: 5
     };
 
+    this.times = [
+      { id: this.reminderEnum.NO_REMINDER, desc: "No reminder" },
+      { id: this.reminderEnum.ONE_HR_LATER, desc: "1 hour later" },
+      { id: this.reminderEnum.TWO_HR_LATER, desc: "2 hours later" },
+      { id: this.reminderEnum.TOM_MORNING, desc: "Tomorrow morning" },
+      { id: this.reminderEnum.SAT_MORNING, desc: "Saturday morning" },
+      { id: this.reminderEnum.MON_MORNING, desc: "Monday morning" }
+    ];
+
     this.state = {
       selected: 0,
-      times: [
-        { id: this.reminderEnum.NO_REMINDER, desc: "No reminder" },
-        { id: this.reminderEnum.ONE_HR_LATER, desc: "1 hour later" },
-        { id: this.reminderEnum.TWO_HR_LATER, desc: "2 hours later" },
-        { id: this.reminderEnum.TOM_MORNING, desc: "Tomorrow morning" },
-        { id: this.reminderEnum.SAT_MORNING, desc: "Saturday morning" },
-        { id: this.reminderEnum.MON_MORNING, desc: "Monday morning" }
-      ]
+      revealReminders: false
     };
 
+    this.setupRevealRemindersAnimation();
+
     this.handleTagSelection = this.handleTagSelection.bind(this);
+  }
+
+  /*--------------------------------------------------
+    Lifecycle events
+  ----------------------------------------------------*/
+  componentWillReceiveProps(nextProps) {
+    this.setState({ revealReminders: nextProps.revealReminders });
+    if (nextProps.revealReminders === false) this.setState({ selected: 0 });
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    this.toggleRevealRemindersAnimation();
   }
 
   /*--------------------------------------------------
     Helpers & Handlers
   ----------------------------------------------------*/
   handleTagSelection(id) {
-    const selectedTagIndex = this.state.times.findIndex(tag => {
+    const selectedTagIndex = this.times.findIndex(tag => {
       return tag.id === id;
     });
 
@@ -69,10 +90,43 @@ class Reminders extends React.PureComponent {
     }
   }
 
+  setupRevealRemindersAnimation() {
+    // Setup drivers
+    this.revealTagsAnimationDrivers = this.times.map((value, index) => {
+      return new Animated.Value(0);
+    });
+
+    // Setup animations
+    this.revealTagsAnimations = this.revealTagsAnimationDrivers.map(
+      (value, index) => {
+        return Animated.timing(this.revealTagsAnimationDrivers[index], {
+          toValue: 1,
+          duration: 200,
+          easing: Easing.in,
+          useNativeDriver: true
+        });
+      }
+    );
+  }
+
+  resetRemindersAnimation() {
+    this.revealTagsAnimationDrivers.forEach(value => {
+      value.setValue(0);
+    });
+  }
+
+  toggleRevealRemindersAnimation() {
+    this.props.revealReminders === true
+      ? Animated.stagger(120, this.revealTagsAnimations).start()
+      : this.resetRemindersAnimation();
+  }
+
   /*--------------------------------------------------
     Render UI
   ----------------------------------------------------*/
   render() {
+    if (this.state.revealReminders === false) return null;
+
     return (
       <ScrollView
         contentContainerStyle={styles.container}
@@ -82,7 +136,7 @@ class Reminders extends React.PureComponent {
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}
       >
-        {this.state.times.map((item, index) =>
+        {this.times.map((item, index) =>
           <Tag
             key={item.id}
             id={item.id}
@@ -90,6 +144,7 @@ class Reminders extends React.PureComponent {
             value={item.value}
             selected={index === this.state.selected}
             onSelect={this.handleTagSelection}
+            animationDriver={this.revealTagsAnimationDrivers[index]}
           />
         )}
       </ScrollView>
@@ -103,13 +158,6 @@ class Reminders extends React.PureComponent {
 const styles = StyleSheet.create({
   container: { paddingHorizontal: 28 }
 });
-
-/*--------------------------------------------------
-  Props
-----------------------------------------------------*/
-Reminders.propTypes = {
-  onAddReminder: PropTypes.func.isRequired
-};
 
 /*--------------------------------------------------
   Exports

@@ -3,6 +3,10 @@ import { Text, StyleSheet } from "react-native";
 import PropTypes from "prop-types";
 
 class RowTitleText extends React.PureComponent {
+  static propTypes = {
+    text: PropTypes.string.isRequired
+  };
+
   constructor(props) {
     super(props);
 
@@ -68,13 +72,6 @@ const styles = StyleSheet.create({
     paddingRight: 20
   }
 });
-
-/*--------------------------------------------------
-  Props
-----------------------------------------------------*/
-RowTitleText.propTypes = {
-  text: PropTypes.string.isRequired
-};
 
 /*--------------------------------------------------
   Exports
