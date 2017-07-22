@@ -1,4 +1,4 @@
-import React from "react";
+// import React from "react";
 import { StackNavigator } from "react-navigation";
 import { Items, ReminderOptions } from "./../screens/Index";
 

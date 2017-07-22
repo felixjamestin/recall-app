@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import PropTypes from "prop-types";
 import Modal from "react-native-modalbox";
+import PushNotification from "react-native-push-notification";
 import Chroma from "chroma-js";
 import {
   AppStyles,
@@ -122,10 +123,9 @@ class AddItem extends React.Component {
     if (this.state.addItemValue === "") return;
 
     ColorHelper.incrementColors();
-
-    AnalyticsHelper.trackEvent({
-      name: "add_item-saved",
-      value: this.state.addItemValue
+    this.setupPushNotifications({
+      value: this.props.onItemAddition,
+      reminder: this.state.addItemReminder
     });
 
     // Pass state to higher-order component
@@ -134,11 +134,23 @@ class AddItem extends React.Component {
       this.state.addItemReminder
     );
 
-    this.animateHideReminders();
-
     // Set local state
     this.setState({ addItemValue: "", addItemReminder: "" });
     this.checkItemSaved = true;
+
+    this.animateHideReminders();
+
+    AnalyticsHelper.trackEvent({
+      name: "add_item-saved",
+      value: this.state.addItemValue
+    });
+  }
+
+  setupPushNotifications({ value, reminder } = {}) {
+    PushNotification.localNotificationSchedule({
+      message: "My Notification Message", // (required)
+      date: new Date(Date.now() + 60 * 1000) // in 60 secs //this.state.addItemReminder
+    });
   }
 
   handleAddReminder(reminder) {
