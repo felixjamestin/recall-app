@@ -4,8 +4,6 @@ import PropTypes from "prop-types";
 import Moment from "moment";
 import { Tag } from "./common/Tag";
 
-require("datejs");
-
 /*--------------------------------------------------
   Component
 ----------------------------------------------------*/
@@ -82,11 +80,11 @@ class Reminders extends React.PureComponent {
     } else if (id === this.reminderEnum.TWO_HR_LATER) {
       return Moment().add(2, "h");
     } else if (id === this.reminderEnum.TOM_MORNING) {
-      return Date.parse("tomorrow").addHours(8); //TODO: Reduce to only use momentjs
+      return Moment().add(1, "d").hours(8).minutes(0).seconds(0);
     } else if (id === this.reminderEnum.SAT_MORNING) {
-      return Date.parse("next saturday").addHours(8);
+      return Moment().day("Saturday").hours(8).minutes(0).seconds(0);
     } else if (id === this.reminderEnum.MON_MORNING) {
-      return Date.parse("next monday").addHours(8);
+      return Moment().day("Monday").hours(8).minutes(0).seconds(0);
     }
   }
 

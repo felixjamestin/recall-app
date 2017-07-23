@@ -1,7 +1,7 @@
 import React from "react";
 import { View, AsyncStorage, StatusBar } from "react-native";
-import { AddItem, ListItems } from "./Index";
-import { Item, AddItemsButton } from "./../components/Index";
+import { AddItem, ListItems, PushController } from "./Index";
+import { AddItemsButton } from "./../components/Index";
 import {
   AppStyles,
   ColorHelper,
@@ -246,6 +246,7 @@ class Items extends React.Component {
           onClose={this.handleCloseAddItem}
           wereItemsFetched={this.wereItemsFetched}
         />
+        <PushController />
       </View>
     );
   }

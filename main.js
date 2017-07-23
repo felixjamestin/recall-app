@@ -1,5 +1,4 @@
 import React from "react";
-import { View, Text } from "react-native";
 import { Root } from "./src/config/Router";
 
 class App extends React.Component {

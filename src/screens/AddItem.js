@@ -149,9 +149,21 @@ class AddItem extends React.Component {
   }
 
   triggerPushNotifications({ value, reminder } = {}) {
+    let reminderDate;
+    if (reminder === "") {
+      reminderDate = new Date(Date.now() + 0 * 1000);
+    } else {
+      reminderDate = reminder.toDate();
+    }
+
     PushNotification.localNotificationSchedule({
-      message: value, // (required)
-      date: new Date(Date.now() + 0 * 1000) //reminder //new Date(Date.now() + 0 * 1000) // in 60 secs //this.state.addItemReminder
+      message: value,
+      date: reminderDate,
+      autoCancel: false,
+      largeIcon: "ic_launcher",
+      smallIcon: "ic_launcher", //"ic_notification",
+      title: "Recall",
+      action: "['Snooze 1 hr', 'Snooze 6 hrs', 'Snooze till tomorrow']"
     });
   }
 
@@ -495,7 +507,7 @@ const styles = StyleSheet.create({
     flex: 0,
     justifyContent: "flex-start",
     alignItems: "center",
-    height: 140,
+    height: 160,
     marginTop: 50
   },
   add_item__container: {
