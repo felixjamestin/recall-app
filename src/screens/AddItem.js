@@ -163,7 +163,7 @@ class AddItem extends React.Component {
       largeIcon: "ic_launcher",
       smallIcon: "ic_launcher", //"ic_notification",
       title: "Recall",
-      action: "['Snooze 1 hr', 'Snooze 6 hrs', 'Snooze till tomorrow']"
+      action: "['Snooze: 1 hr', 'Snooze: 6 hrs', 'Snooze: Tomorrow']"
     });
   }
 

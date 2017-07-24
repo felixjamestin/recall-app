@@ -21,7 +21,9 @@ class RowTitleText extends React.PureComponent {
     let titleStyle = styles.item_title_large;
 
     const textLength = text.length;
-    if (textLength > 55) {
+    if (textLength > 95) {
+      titleStyle = styles.item_title_tiny;
+    } else if (textLength > 55) {
       titleStyle = styles.item_title_small;
     } else if (textLength > 40) {
       titleStyle = styles.item_title_medium;
@@ -69,6 +71,11 @@ const styles = StyleSheet.create({
   item_title_small: {
     fontSize: 16,
     lineHeight: 28,
+    paddingRight: 20
+  },
+  item_title_tiny: {
+    fontSize: 13,
+    lineHeight: 24,
     paddingRight: 20
   }
 });

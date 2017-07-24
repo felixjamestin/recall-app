@@ -64,9 +64,11 @@ class PushController extends React.PureComponent {
 
       const info = JSON.parse(action.dataJSON);
       if (info.action === "Snooze: 1 hr") {
-        alert("Holaaaa");
+        alert("Alohaaaa");
       } else if (info.action === "Snooze: 6 hrs") {
+        alert("Booyaaaa");
       } else if (info.action === "Snooze: Tomorrow") {
+        alert("Holaaaa");
       }
     });
   }

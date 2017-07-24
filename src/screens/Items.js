@@ -1,12 +1,13 @@
 import React from "react";
 import { View, AsyncStorage, StatusBar } from "react-native";
 import { AddItem, ListItems, PushController } from "./Index";
-import { AddItemsButton } from "./../components/Index";
+import { AddItemsButton, ItemFactory } from "./../components/Index";
 import {
   AppStyles,
   ColorHelper,
   AnalyticsHelper
 } from "./../components/common/Index";
+import Moment from "moment";
 
 /*--------------------------------------------------
   Component
@@ -89,23 +90,15 @@ class Items extends React.Component {
 
   doAddition(params) {
     const newItems = [
-      {
-        key: Date.now(),
+      ItemFactory.createItem({
         value: params.addItemValue,
-        reminder: params.addItemReminder,
-        selected: false,
-        delete: false,
-        createdAt: new Date(),
-        bgColor: ColorHelper.getColorForRow({
-          incrementColors: false
-        }),
-        contentType: "text"
-      },
+        reminder: params.addItemReminder
+      }),
       ...this.items
     ];
 
     this.items = newItems;
-    this.storeLocalData();
+    this.storeLocalData(this.items);
 
     this.setState({ actionPerformed: this.getActionEnum().add });
   }
@@ -116,7 +109,7 @@ class Items extends React.Component {
     this.items = clone;
 
     this.items[params.rowID].delete = true;
-    this.storeLocalData();
+    this.storeLocalData(this.items);
 
     this.setupColorIndex();
     this.setState({ actionPerformed: this.getActionEnum().delete });
@@ -146,27 +139,74 @@ class Items extends React.Component {
     });
   }
 
-  storeLocalData() {
-    const itemsExcludingDeleted = this.items.filter(value => {
+  storeLocalData(items) {
+    const itemsExcludingDeleted = items.filter(value => {
       return value.delete !== true;
     });
     AsyncStorage.setItem("items", JSON.stringify(itemsExcludingDeleted));
   }
 
-  fetchLocalData() {
-    AsyncStorage.getItem("items").then(json => {
-      try {
-        if (json) {
-          this.items = JSON.parse(json);
-          this.setupColorIndex();
-          this.wereItemsFetched = true;
+  storeProfileData({ onboardingComplete = false } = {}) {
+    const profile = {
+      onboardingComplete
+    };
 
-          this.setState({ actionPerformed: this.getActionEnum().init });
-        }
-      } catch (e) {
-        console.log(e);
-      }
-    });
+    AsyncStorage.setItem("profile", JSON.stringify(profile));
+  }
+
+  async fetchLocalData() {
+    try {
+      const profileJson = await AsyncStorage.getItem("profile");
+      const profile = JSON.parse(profileJson);
+      const onboardingComplete =
+        profile !== null && profile.onboardingComplete === true ? true : false;
+
+      const itemJson = await AsyncStorage.getItem("items");
+      const items = JSON.parse(itemJson);
+      const doItemsExist = items !== null && items.length > 0;
+
+      this.items = doItemsExist
+        ? items
+        : this.fetchDefaultItems({ onboardingComplete });
+    } catch (e) {
+      console.log(e);
+    }
+
+    this.setupColorIndex();
+    this.wereItemsFetched = true;
+    this.setState({ actionPerformed: this.getActionEnum().init });
+  }
+
+  fetchDefaultItems({ onboardingComplete = false } = {}) {
+    if (onboardingComplete === true) return [];
+
+    const items = [
+      ItemFactory.createItem({
+        value:
+          "Stop juggling 🤹 things in your head. Recall is built to let you offload things quickly",
+        reminder: "",
+        incrementColors: true,
+        color: AppStyles.rowColors.a
+      }),
+      ItemFactory.createItem({
+        value:
+          "Things like people you have to call back, books recommended by friends or even just groceries",
+        reminder: "",
+        incrementColors: true,
+        color: AppStyles.rowColors.b
+      }),
+      ItemFactory.createItem({
+        value: "Done with an item? Simply swipe to delete it",
+        reminder: "",
+        incrementColors: true,
+        color: AppStyles.rowColors.c
+      })
+    ];
+
+    this.storeLocalData(items);
+    this.storeProfileData({ onboardingComplete: true });
+
+    return items;
   }
 
   handleShowAddItem() {
@@ -220,6 +260,7 @@ class Items extends React.Component {
   render() {
     return (
       <View>
+        <PushController />
         <StatusBar
           backgroundColor={AppStyles.colors.appBackground}
           barStyle="light-content"
@@ -246,7 +287,6 @@ class Items extends React.Component {
           onClose={this.handleCloseAddItem}
           wereItemsFetched={this.wereItemsFetched}
         />
-        <PushController />
       </View>
     );
   }

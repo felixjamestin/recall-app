@@ -1,6 +1,6 @@
 import { AppStyles } from "./Index";
 
-export class ColorHelper {
+class ColorHelper {
   static bgColorIndex = 0;
   static saveCounter = 0; // Used to update color upon saving items
 
@@ -42,3 +42,5 @@ export class ColorHelper {
     return AppStyles.rowColors[colorKeys[colorIndex]];
   }
 }
+
+export { ColorHelper };
