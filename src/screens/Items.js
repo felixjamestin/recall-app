@@ -190,7 +190,7 @@ class Items extends React.Component {
       }),
       ItemFactory.createItem({
         value:
-          "Things like people you have to 📱call back, 📚 books recommended by friends or even just groceries 🍞.",
+          "Things like people you have to 📱call back, 📚 books recommended by friends or even just groceries 🍞",
         reminder: "",
         incrementColors: true,
         color: AppStyles.rowColors.b

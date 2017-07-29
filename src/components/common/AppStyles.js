@@ -12,7 +12,7 @@ const AppStyles = {
     a: "#774CC5",
     b: "#02C39A",
     c: "#01BAEF", //"#4BA3D3",
-    d: "#E83F6F",
+    d: "#EB5680", //"#E83F6F",
     e: "#0081AF" //#FFBC42",
   },
   rowColors1: {

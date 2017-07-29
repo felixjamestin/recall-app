@@ -10,6 +10,7 @@ import {
   Animated,
   KeyboardAvoidingView
 } from "react-native";
+import Animation from "lottie-react-native";
 import PropTypes from "prop-types";
 import Modal from "react-native-modalbox";
 import PushNotification from "react-native-push-notification";
@@ -184,22 +185,10 @@ class AddItem extends React.Component {
 
   startSaveFeedbackAnimation() {
     this.saveFeedbackAnimationDriver.setValue(0);
-
-    Animated.spring(this.saveFeedbackAnimationDriver, {
-      toValue: 0.4,
-      duration: 100,
-      friction: 6,
-      tension: 100,
-      delay: 0,
-      useNativeDriver: true
-    }).start(() => {
-      Animated.timing(this.saveFeedbackAnimationDriver, {
-        toValue: 0,
-        duration: 500,
-        delay: 1000,
-        useNativeDriver: true
-      }).start();
-    });
+    Animated.timing(this.saveFeedbackAnimationDriver, {
+      toValue: 1,
+      duration: 5000
+    }).start();
   }
 
   showDependantControls(value) {
@@ -373,7 +362,6 @@ class AddItem extends React.Component {
             {this.renderReminders()}
           </Animated.View>
           {this.renderSaveButton()}
-          {this.renderSaveFeedbackAnimation()}
         </AnimatedModal>
       </View>
     );
@@ -413,6 +401,7 @@ class AddItem extends React.Component {
           caretHidden={false}
           selectionColor="rgba(255, 255, 255, 0.3)"
         />
+        {this.renderSaveFeedbackAnimation()}
       </KeyboardAvoidingView>
     );
   }
@@ -459,22 +448,10 @@ class AddItem extends React.Component {
 
   renderSaveFeedbackAnimation() {
     return (
-      <Animated.Image
-        source={require("./../../assets/images/add_item_sucess.gif")}
-        style={[
-          styles.save_feedback,
-          {
-            opacity: this.saveFeedbackAnimationDriver,
-            transform: [
-              {
-                translateX: this.saveFeedbackAnimationDriver.interpolate({
-                  inputRange: [0, 0.4],
-                  outputRange: [-25, -10]
-                })
-              }
-            ]
-          }
-        ]}
+      <Animation
+        style={styles.save_feedback}
+        source="soda_loader.json"
+        progress={this.saveFeedbackAnimationDriver}
       />
     );
   }
@@ -574,10 +551,10 @@ const styles = StyleSheet.create({
   save_feedback: {
     width: 50,
     height: 50,
-    opacity: 0,
+    opacity: 1,
     alignSelf: "flex-end",
-    marginRight: 20,
-    marginBottom: -10,
+    top: 30,
+    right: 20,
     justifyContent: "center",
     position: "absolute"
   },

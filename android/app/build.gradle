@@ -83,13 +83,13 @@ def enableSeparateBuildPerCPUArchitecture = false
 def enableProguardInReleaseBuilds = false
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.1"
+    compileSdkVersion 25    //23
+    buildToolsVersion "25.0.2" //"23.0.1"
 
     defaultConfig {
         applicationId "com.recallapp_rn"
         minSdkVersion 16
-        targetSdkVersion 22
+        targetSdkVersion 25 //22
         versionCode 1
         versionName "1.0"
         ndk {
@@ -137,6 +137,7 @@ android {
 }
 
 dependencies {
+    compile project(':lottie-react-native')
     compile project(':react-native-push-notification')
     compile project(':react-native-device-info')
     compile fileTree(dir: "libs", include: ["*.jar"])
@@ -144,6 +145,8 @@ dependencies {
     compile "com.facebook.react:react-native:+"  // From node_modules
     compile 'com.facebook.fresco:animated-base-support:0.14.1'
     compile 'com.facebook.fresco:animated-gif:1.0.1'
+    compile "com.android.support:appcompat-v7:25.1.1"
+    compile 'com.airbnb.android:lottie:1.5.3'
 }
 
 // Run this once to be able to run the application with BUCK
