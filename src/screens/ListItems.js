@@ -3,7 +3,7 @@ import { View, Image, Text, ListView, StyleSheet } from "react-native";
 import PropTypes from "prop-types";
 import Chroma from "chroma-js";
 import { Row } from "./../components/Index";
-import { AppStyles } from "./../components/common/Index";
+import { AppStyles, StringHelper } from "./../components/common/Index";
 
 /*--------------------------------------------------
   Component
@@ -113,6 +113,15 @@ class ListItems extends React.Component {
   }
 
   renderWhenNoItems() {
+    const titles = ["You're all done!", "You're all done!", "You're all done!"];
+    const title = StringHelper.getRandomPlaceholder(titles);
+    const subtitles = [
+      "and free like a bird :)",
+      "and free like a bird :)",
+      "and free like a bird :)"
+    ];
+    const subtitle = StringHelper.getRandomPlaceholder(subtitles);
+
     return (
       <View style={styles.container}>
         <View style={styles.no_items_state}>
@@ -120,9 +129,11 @@ class ListItems extends React.Component {
             source={require("./../../assets/images/no_items_state.gif")}
             style={{ width: 170, height: 170 }}
           />
-          <Text style={styles.empty_state__title}>You're all done!</Text>
+          <Text style={styles.empty_state__title}>
+            {title}
+          </Text>
           <Text style={styles.empty_state__subtitle}>
-            and free like a bird :)
+            {subtitle}
           </Text>
         </View>
       </View>

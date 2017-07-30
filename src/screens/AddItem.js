@@ -17,6 +17,7 @@ import Chroma from "chroma-js";
 import {
   AppStyles,
   ColorHelper,
+  StringHelper,
   AnalyticsHelper
 } from "./../components/common/Index";
 import { Reminders } from "../components/Index";
@@ -355,6 +356,20 @@ class AddItem extends React.Component {
     const addItemTextStyle = this.getDynamicStylesForAddItemText(
       this.state.addItemValue
     );
+    const placeholders = [
+      "eg. buy milk & eggs",
+      "eg. call anita",
+      "eg. pay joe back",
+      "eg. book tickets",
+      "eg. pay gas bills"
+    ];
+    // const placeholders = [
+    //   "eg. buy milk & bread",
+    //   "eg. call anita back",
+    //   "eg. book movie tickets for friday",
+    //   "eg. reply to joe's message"
+    // ];
+    const placeholder = StringHelper.getRandomPlaceholder(placeholders);
 
     return (
       <KeyboardAvoidingView
@@ -378,7 +393,7 @@ class AddItem extends React.Component {
           multiline
           numberOfLines={3}
           autoFocus
-          placeholder="buy milk & bread"
+          placeholder={placeholder} //"buy milk & bread"
           placeholderTextColor="rgba(255, 255, 255, .3)"
           underlineColorAndroid="transparent"
           caretHidden={false}

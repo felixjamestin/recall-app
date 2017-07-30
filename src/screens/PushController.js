@@ -2,6 +2,7 @@ import React from "react";
 import { DeviceEventEmitter } from "react-native";
 import PushNotification from "react-native-push-notification";
 import Moment from "moment";
+import { MathHelper } from "../components/common/MathHelper";
 
 class PushController extends React.PureComponent {
   static pushActionEnum = {
@@ -18,7 +19,7 @@ class PushController extends React.PureComponent {
       reminderDate = reminder.toDate();
     }
 
-    const id = Date.now();
+    const id = MathHelper.getRandomIntInclusive(1, 100000000);
     PushNotification.localNotificationSchedule({
       id,
       title: "Recall",
