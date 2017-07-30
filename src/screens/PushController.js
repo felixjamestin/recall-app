@@ -1,8 +1,44 @@
 import React from "react";
 import { DeviceEventEmitter } from "react-native";
 import PushNotification from "react-native-push-notification";
+import Moment from "moment";
 
 class PushController extends React.PureComponent {
+  static pushActionEnum = {
+    dismiss: "DISMISS",
+    snooze1hr: "SNOOZE 1HR",
+    snoozetillnextmorning: "TILL TOMM 8AM"
+  };
+
+  static triggerPushNotifications({ value, reminder } = {}) {
+    let reminderDate;
+    if (reminder === "") {
+      reminderDate = new Date(Date.now() + 0 * 1000); //return
+    } else {
+      reminderDate = reminder.toDate();
+    }
+
+    const id = Date.now();
+    PushNotification.localNotificationSchedule({
+      id,
+      title: "Recall",
+      message: value,
+      date: reminderDate,
+      autoCancel: false,
+      largeIcon: "ic_launcher",
+      smallIcon: "ic_launcher", //"ic_notification",
+      actions: `['${PushController.pushActionEnum.dismiss}','${PushController
+        .pushActionEnum.snooze1hr}','${PushController.pushActionEnum
+        .snoozetillnextmorning}']`
+    });
+
+    return id;
+  }
+
+  static cancelPushNotification({ reminderID } = {}) {
+    PushNotification.cancelLocalNotifications({ id: reminderID });
+  }
+
   /*--------------------------------------------------
     Lifecycle events
   ----------------------------------------------------*/
@@ -19,17 +55,17 @@ class PushController extends React.PureComponent {
   ----------------------------------------------------*/
   configurePushNotifications() {
     PushNotification.configure({
-      // (optional) Called when Token is generated (iOS and Android)
+      // Opt: Called when Token is generated (iOS and Android)
       onRegister: token => {
         console.log("TOKEN:", token);
       },
 
-      // (required) Called when a remote or local notification is opened or received
+      // Called when a remote or local notification is opened or received
       onNotification: notification => {
         console.log("NOTIFICATION:", notification);
       },
 
-      // ANDROID ONLY: GCM Sender ID (optional for local notifications, but required for remote ones)
+      // ANDROID ONLY: GCM Sender ID (optional for local notifications, required for remote ones)
       senderID: "YOUR GCM SENDER ID",
 
       // IOS ONLY (optional): default: all - Permissions to register
@@ -43,32 +79,38 @@ class PushController extends React.PureComponent {
       // default: true
       popInitialNotification: true,
 
-      /**
-      * (optional) default: true
-      * - Specified if permissions (ios) and token (android and ios) will requested or not,
-      * - if not, you must call PushNotificationsHandler.requestPermissions() later
-      */
+      //
+      // Opt: default: true
+      // - Specified if permissions (ios) and token (android and ios) will requested or not,
+      // - if not, you must call PushNotificationsHandler.requestPermissions() later
+      //
       requestPermissions: true
     });
   }
 
   handlePushActions() {
     PushNotification.registerNotificationActions([
-      "Snooze: 1 hr",
-      "Snooze: 6 hrs",
-      "Snooze: Tomorrow"
+      PushController.pushActionEnum.dismiss,
+      PushController.pushActionEnum.snooze1hr,
+      PushController.pushActionEnum.snoozetillnextmorning
     ]);
 
     DeviceEventEmitter.addListener("notificationActionReceived", action => {
-      console.log("Notification action received: " + action);
-
       const info = JSON.parse(action.dataJSON);
-      if (info.action === "Snooze: 1 hr") {
-        alert("Alohaaaa");
-      } else if (info.action === "Snooze: 6 hrs") {
-        alert("Booyaaaa");
-      } else if (info.action === "Snooze: Tomorrow") {
-        alert("Holaaaa");
+      if (info.action === PushController.pushActionEnum.dismiss) {
+        // Do nothing
+      } else if (info.action === PushController.pushActionEnum.snooze1hr) {
+        PushController.triggerPushNotifications({
+          value: info.message,
+          reminder: Moment().add(1, "h")
+        });
+      } else if (
+        info.action === PushController.pushActionEnum.snoozetillnextmorning
+      ) {
+        PushController.triggerPushNotifications({
+          value: info.message,
+          reminder: Moment().add(1, "d").hours(8).minutes(0).seconds(0)
+        });
       }
     });
   }

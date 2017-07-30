@@ -2,7 +2,13 @@ import { ColorHelper } from "./common/Index";
 
 class ItemFactory {
   static createItem(
-    { value, reminder = "", incrementColors = false, color = "" } = {}
+    {
+      value,
+      reminder = "",
+      reminderID,
+      incrementColors = false,
+      color = ""
+    } = {}
   ) {
     const bgColor =
       color === ""
@@ -15,6 +21,7 @@ class ItemFactory {
       key: Date.now(),
       value,
       reminder,
+      reminderID,
       selected: false,
       delete: false,
       createdAt: new Date(),

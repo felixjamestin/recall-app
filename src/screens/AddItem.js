@@ -13,7 +13,6 @@ import {
 import Animation from "lottie-react-native";
 import PropTypes from "prop-types";
 import Modal from "react-native-modalbox";
-import PushNotification from "react-native-push-notification";
 import Chroma from "chroma-js";
 import {
   AppStyles,
@@ -21,6 +20,7 @@ import {
   AnalyticsHelper
 } from "./../components/common/Index";
 import { Reminders } from "../components/Index";
+import { PushController } from "../screens/Index";
 
 const AnimatedModal = Animated.createAnimatedComponent(Modal);
 const AnimatedTouchableHighlight = Animated.createAnimatedComponent(
@@ -125,7 +125,7 @@ class AddItem extends React.Component {
     if (this.state.addItemValue === "") return;
 
     ColorHelper.incrementColors();
-    this.triggerPushNotifications({
+    const addItemReminderID = PushController.triggerPushNotifications({
       value: this.state.addItemValue,
       reminder: this.state.addItemReminder
     });
@@ -133,7 +133,8 @@ class AddItem extends React.Component {
     // Pass state to higher-order component
     this.props.onItemAddition(
       this.state.addItemValue,
-      this.state.addItemReminder
+      this.state.addItemReminder,
+      addItemReminderID
     );
 
     // Set local state
@@ -146,25 +147,6 @@ class AddItem extends React.Component {
     AnalyticsHelper.trackEvent({
       name: "add_item-saved",
       value: this.state.addItemValue
-    });
-  }
-
-  triggerPushNotifications({ value, reminder } = {}) {
-    let reminderDate;
-    if (reminder === "") {
-      reminderDate = new Date(Date.now() + 0 * 1000);
-    } else {
-      reminderDate = reminder.toDate();
-    }
-
-    PushNotification.localNotificationSchedule({
-      message: value,
-      date: reminderDate,
-      autoCancel: false,
-      largeIcon: "ic_launcher",
-      smallIcon: "ic_launcher", //"ic_notification",
-      title: "Recall",
-      action: "['Snooze: 1 hr', 'Snooze: 6 hrs', 'Snooze: Tomorrow']"
     });
   }
 

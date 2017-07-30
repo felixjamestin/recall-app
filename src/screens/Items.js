@@ -7,7 +7,6 @@ import {
   ColorHelper,
   AnalyticsHelper
 } from "./../components/common/Index";
-import Moment from "moment";
 
 /*--------------------------------------------------
   Component
@@ -92,7 +91,8 @@ class Items extends React.Component {
     const newItems = [
       ItemFactory.createItem({
         value: params.addItemValue,
-        reminder: params.addItemReminder
+        reminder: params.addItemReminder,
+        reminderID: params.addItemRemiderID
       }),
       ...this.items
     ];
@@ -111,6 +111,10 @@ class Items extends React.Component {
     this.items[params.rowID].delete = true;
     this.storeLocalData(this.items);
 
+    PushController.cancelPushNotification({
+      reminderID: this.items[params.rowID].reminderID
+    });
+
     this.setupColorIndex();
     this.setState({ actionPerformed: this.getActionEnum().delete });
   }
@@ -119,11 +123,12 @@ class Items extends React.Component {
     this.setState(params);
   }
 
-  handleItemAddition(value, reminder) {
+  handleItemAddition(value, reminderTime, reminderID) {
     if (!value) return;
     this.setStateHandler(this.getActionEnum().add, {
       addItemValue: value,
-      addItemReminder: reminder
+      addItemReminder: reminderTime,
+      addItemRemiderID: reminderID
     });
     this.setStateHandler(this.getActionEnum().set, {
       animateRow: true
