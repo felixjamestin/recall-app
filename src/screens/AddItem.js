@@ -363,12 +363,6 @@ class AddItem extends React.Component {
       "eg. book tickets",
       "eg. pay gas bills"
     ];
-    // const placeholders = [
-    //   "eg. buy milk & bread",
-    //   "eg. call anita back",
-    //   "eg. book movie tickets for friday",
-    //   "eg. reply to joe's message"
-    // ];
     const placeholder = StringHelper.getRandomPlaceholder(placeholders);
 
     return (
