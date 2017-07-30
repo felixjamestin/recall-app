@@ -1,15 +1,51 @@
 import React, { Component } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { StyleSheet, Animated } from "react-native";
+import PropTypes from "prop-types";
+import Animation from "lottie-react-native";
 
 /*--------------------------------------------------
   Component
 ----------------------------------------------------*/
 class AnimatedTick extends Component {
+  static propTypes = {
+    showAnimation: PropTypes.bool.isRequired
+  };
+
+  constructor(props) {
+    super(props);
+
+    this.animationDriver = new Animated.Value(0);
+  }
+
+  /*--------------------------------------------------
+    Lifecycle events
+  ----------------------------------------------------*/
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.showAnimation !== true) return;
+    this.startAnimation();
+  }
+
+  /*--------------------------------------------------
+    Helpers & Handlers
+  ----------------------------------------------------*/
+  startAnimation() {
+    this.animationDriver.setValue(0);
+    Animated.timing(this.animationDriver, {
+      toValue: 1,
+      duration: 5000
+    }).start();
+  }
+
+  /*--------------------------------------------------
+    Render UI
+  ----------------------------------------------------*/
   render() {
     return (
-      <View style={styles.container}>
-        <Text>AnimatedTick</Text>
-      </View>
+      <Animation
+        style={styles.animation}
+        source="soda_loader.json"
+        progress={this.saveFeedbackAnimationDriver}
+      />
     );
   }
 }
@@ -18,11 +54,10 @@ class AnimatedTick extends Component {
   Styles
 ----------------------------------------------------*/
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#2c3e50"
+  animation: {
+    width: 50,
+    height: 50,
+    opacity: 1
   }
 });
 

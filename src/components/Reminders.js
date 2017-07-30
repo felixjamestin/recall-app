@@ -82,10 +82,19 @@ class Reminders extends React.PureComponent {
     } else if (id === this.reminderEnum.TOM_MORNING) {
       return Moment().add(1, "d").hours(8).minutes(0).seconds(0);
     } else if (id === this.reminderEnum.SAT_MORNING) {
-      return Moment().day("Saturday").hours(8).minutes(0).seconds(0);
+      return this.getNextISODayOfWeek(6).hours(8).minutes(0).seconds(0);
     } else if (id === this.reminderEnum.MON_MORNING) {
-      return Moment().day("Monday").hours(8).minutes(0).seconds(0);
+      return this.getNextISODayOfWeek(1).hours(8).minutes(0).seconds(0);
     }
+  }
+
+  getNextISODayOfWeek(dayOfWeek) {
+    const today = Moment().isoWeekday();
+    const day =
+      today <= dayOfWeek
+        ? Moment().isoWeekday(dayOfWeek)
+        : Moment().add(1, "weeks").isoWeekday(dayOfWeek);
+    return day;
   }
 
   setupRevealRemindersAnimation() {

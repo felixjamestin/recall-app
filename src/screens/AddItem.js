@@ -187,7 +187,7 @@ class AddItem extends React.Component {
     this.saveFeedbackAnimationDriver.setValue(0);
     Animated.timing(this.saveFeedbackAnimationDriver, {
       toValue: 1,
-      duration: 5000
+      duration: 1400
     }).start();
   }
 
@@ -361,6 +361,7 @@ class AddItem extends React.Component {
             {this.renderItemDescription()}
             {this.renderReminders()}
           </Animated.View>
+          {this.renderSaveFeedbackAnimation()}
           {this.renderSaveButton()}
         </AnimatedModal>
       </View>
@@ -401,7 +402,6 @@ class AddItem extends React.Component {
           caretHidden={false}
           selectionColor="rgba(255, 255, 255, 0.3)"
         />
-        {this.renderSaveFeedbackAnimation()}
       </KeyboardAvoidingView>
     );
   }
@@ -450,7 +450,7 @@ class AddItem extends React.Component {
     return (
       <Animation
         style={styles.save_feedback}
-        source="soda_loader.json"
+        source="checkmark.json"
         progress={this.saveFeedbackAnimationDriver}
       />
     );
@@ -477,7 +477,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 5,
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
-    marginTop: 20, // 5
+    marginTop: 20,
     elevation: 50
   },
   modal_sub_container: {
@@ -551,10 +551,9 @@ const styles = StyleSheet.create({
   save_feedback: {
     width: 50,
     height: 50,
-    opacity: 1,
-    alignSelf: "flex-end",
-    top: 30,
-    right: 20,
+    opacity: 0.7,
+    alignSelf: "center",
+    bottom: 5,
     justifyContent: "center",
     position: "absolute"
   },
