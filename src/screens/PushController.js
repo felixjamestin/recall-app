@@ -12,14 +12,11 @@ class PushController extends React.PureComponent {
   };
 
   static triggerPushNotifications({ value, reminder } = {}) {
-    let reminderDate;
-    if (reminder === "") {
-      reminderDate = new Date(Date.now() + 0 * 1000); //return
-    } else {
-      reminderDate = reminder.toDate();
-    }
+    if (reminder === "") return; // reminderDate = new Date(Date.now() + 0 * 1000);
 
+    const reminderDate = reminder.toDate();
     const id = MathHelper.getRandomIntInclusive(1, 100000000);
+
     PushNotification.localNotificationSchedule({
       id,
       title: "Recall",

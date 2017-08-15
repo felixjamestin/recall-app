@@ -1,7 +1,15 @@
 class StringHelper {
-  static getRandomPlaceholder(placeholders = []) {
-    const randomIndex = Math.floor(Math.random() * placeholders.length);
-    return placeholders[randomIndex];
+  static getRandomStringFromArray(strings = []) {
+    const randomIndex = Math.floor(Math.random() * strings.length);
+    return strings[randomIndex];
+  }
+
+  static getNextStringInArray(strings = [], currentIndex) {
+    const nextIndex = (currentIndex + 1) % strings.length;
+    return {
+      placeholderText: strings[nextIndex],
+      placeholderIndex: nextIndex
+    };
   }
 }
 

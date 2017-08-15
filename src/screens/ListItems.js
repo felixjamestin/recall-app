@@ -114,13 +114,13 @@ class ListItems extends React.Component {
 
   renderWhenNoItems() {
     const titles = ["You're all done!", "You're all done!", "You're all done!"];
-    const title = StringHelper.getRandomPlaceholder(titles);
+    const title = StringHelper.getRandomStringFromArray(titles);
     const subtitles = [
       "and free like a bird :)",
       "and free like a bird :)",
       "and free like a bird :)"
     ];
-    const subtitle = StringHelper.getRandomPlaceholder(subtitles);
+    const subtitle = StringHelper.getRandomStringFromArray(subtitles);
 
     return (
       <View style={styles.container}>

@@ -12,13 +12,15 @@ class RowReminderText extends React.PureComponent {
     Render UI
   ----------------------------------------------------*/
   render() {
-    const reminder = Moment(this.props.reminderDate).calendar().toUpperCase();
     const isReminderValid = Moment(this.props.reminderDate).isAfter();
-    const isReminderExpired = isReminderValid ? false : true;
+    const isReminderExpired = !isReminderValid;
 
-    if (this.props.reminderDate.toString() === "") {
-      return null;
-    }
+    const reminder = Moment(this.props.reminderDate).calendar().toUpperCase();
+    const reminderTextWithDetails = isReminderValid
+      ? reminder
+      : `${reminder} (EXPIRED)`;
+
+    if (this.props.reminderDate.toString() === "") return null;
 
     return (
       <View style={styles.item_reminder_container}>
@@ -35,7 +37,7 @@ class RowReminderText extends React.PureComponent {
             isReminderExpired && styles.item_reminder_text_expired
           ]}
         >
-          {reminder}
+          {reminderTextWithDetails}
         </Text>
       </View>
     );

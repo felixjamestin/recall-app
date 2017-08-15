@@ -191,7 +191,7 @@ class Items extends React.Component {
           "Stop juggling 🤹 things in your head. Recall is built to let you offload things quickly.",
         reminder: "",
         incrementColors: true,
-        color: AppStyles.rowColors.a
+        color: AppStyles.rowColors.c
       }),
       ItemFactory.createItem({
         value:
@@ -204,7 +204,7 @@ class Items extends React.Component {
         value: "And when you're done with an item? Simply swipe to delete it.",
         reminder: "",
         incrementColors: true,
-        color: AppStyles.rowColors.c
+        color: AppStyles.rowColors.a
       })
     ];
 

@@ -51,6 +51,16 @@ class AddItem extends React.Component {
       revealReminders: false
     };
 
+    this.placeholders = [
+      "eg. buy milk & eggs",
+      "eg. mail sue today",
+      "eg. pay alex back",
+      "eg. book tickets",
+      "eg. pay gas bills"
+    ];
+    this.placeholderText = this.placeholders[0];
+    this.placeholderIndex = 0;
+
     this.checkItemSaved = false;
     this.checkItemChanged = false;
     this.colorChangeAnimationDriver = new Animated.Value(0);
@@ -80,6 +90,12 @@ class AddItem extends React.Component {
       this.props.isVisible !== nextProps.isVisible ||
       nextProps.wereItemsFetched === true;
     return stateCheck || propCheck;
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    if (this.state.addItemValue === "" && nextState.addItemValue !== "") {
+      this.updatePlaceholderText();
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -141,6 +157,8 @@ class AddItem extends React.Component {
     // Set local state
     this.setState({ addItemValue: "", addItemReminder: "" });
     this.checkItemSaved = true;
+
+    this.updatePlaceholderText();
 
     this.animateHideReminders();
     this.animateRevertPositionAddItemText();
@@ -351,19 +369,21 @@ class AddItem extends React.Component {
     );
   }
 
+  updatePlaceholderText() {
+    const placeholder = StringHelper.getNextStringInArray(
+      this.placeholders,
+      this.placeholderIndex
+    );
+
+    this.placeholderText = placeholder.placeholderText;
+    this.placeholderIndex = placeholder.placeholderIndex;
+  }
+
   renderItemDescription() {
     const animatedStyle = this.getAnimationStyles();
     const addItemTextStyle = this.getDynamicStylesForAddItemText(
       this.state.addItemValue
     );
-    const placeholders = [
-      "eg. buy milk & eggs",
-      "eg. call anita",
-      "eg. pay joe back",
-      "eg. book tickets",
-      "eg. pay gas bills"
-    ];
-    const placeholder = StringHelper.getRandomPlaceholder(placeholders);
 
     return (
       <KeyboardAvoidingView
@@ -387,8 +407,8 @@ class AddItem extends React.Component {
           multiline
           numberOfLines={3}
           autoFocus
-          placeholder={placeholder} //"buy milk & bread"
-          placeholderTextColor="rgba(255, 255, 255, .3)"
+          placeholder={this.placeholderText}
+          placeholderTextColor="rgba(255, 255, 255, .2)"
           underlineColorAndroid="transparent"
           caretHidden={false}
           selectionColor="rgba(255, 255, 255, 0.3)"
