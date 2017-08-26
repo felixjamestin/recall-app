@@ -83,13 +83,13 @@ def enableSeparateBuildPerCPUArchitecture = false
 def enableProguardInReleaseBuilds = false
 
 android {
-    compileSdkVersion 25    //23
-    buildToolsVersion "25.0.2" //"23.0.1"
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
 
     defaultConfig {
         applicationId "com.recallapp_rn"
         minSdkVersion 16
-        targetSdkVersion 25 //22
+        targetSdkVersion 25
         versionCode 3
         versionName "2.1"
         ndk {
@@ -119,6 +119,20 @@ android {
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             signingConfig signingConfigs.release
+        }
+    }
+    productFlavors {
+        dev {
+            minSdkVersion 16
+            applicationId 'com.recallapp_rn.dev'
+            targetSdkVersion 25
+            resValue "string", "build_config_package", "com.recallapp_rn"
+        }
+        prod {
+            minSdkVersion 16
+            applicationId 'com.recallapp_rn'
+            targetSdkVersion 25
+            resValue "string", "build_config_package", "com.recallapp_rn"
         }
     }
     // applicationVariants are e.g. debug, release

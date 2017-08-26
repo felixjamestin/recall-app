@@ -101,6 +101,7 @@ class Reminders extends React.PureComponent {
   handleDatePicked(date) {
     const reminderDate = Moment(date);
     this.props.onAddReminder(reminderDate);
+    this.setState({ isDateTimePickerVisible: false });
   }
 
   convertTagToDate(id) {
@@ -110,7 +111,7 @@ class Reminders extends React.PureComponent {
       return Moment().add(1, "h");
     } else if (id === this.timesEnum.TWO_HR_LATER) {
       return Moment().add(2, "h");
-    } else if (id === this.timesEnum.SIX_HR_LATER) {
+    } else if (id === this.timesEnum.THREE_HR_LATER) {
       return Moment().add(3, "h");
     } else if (id === this.timesEnum.TOM_MORNING) {
       return Moment().add(1, "d").hours(8).minutes(0).seconds(0);
@@ -192,6 +193,7 @@ class Reminders extends React.PureComponent {
           onConfirm={this.handleDatePicked}
           onCancel={this.hideDateTimePicker}
           mode="datetime"
+          is24Hour={false}
         />
       </ScrollView>
     );
