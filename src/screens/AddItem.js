@@ -21,7 +21,7 @@ import {
   AnalyticsHelper
 } from "./../components/common/Index";
 import { Reminders } from "../components/Index";
-import { PushController } from "../screens/Index";
+import { PushService } from "../screens/Index";
 
 const AnimatedModal = Animated.createAnimatedComponent(Modal);
 const AnimatedTouchableHighlight = Animated.createAnimatedComponent(
@@ -142,7 +142,7 @@ class AddItem extends React.Component {
     if (this.state.addItemValue === "") return;
 
     ColorHelper.incrementColors();
-    const addItemReminderID = PushController.triggerPushNotifications({
+    const addItemReminderID = PushService.triggerPushNotifications({
       value: this.state.addItemValue,
       reminder: this.state.addItemReminder
     });

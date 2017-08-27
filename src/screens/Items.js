@@ -1,6 +1,6 @@
 import React from "react";
 import { View, AsyncStorage, StatusBar } from "react-native";
-import { AddItem, ListItems, PushController } from "./Index";
+import { AddItem, ListItems, PushService } from "./Index";
 import { AddItemsButton, ItemFactory } from "./../components/Index";
 import {
   AppStyles,
@@ -111,7 +111,7 @@ class Items extends React.Component {
     this.items[params.rowID].delete = true;
     this.storeLocalData(this.items);
 
-    PushController.cancelPushNotification({
+    PushService.cancelPushNotification({
       reminderID: this.items[params.rowID].reminderID
     });
 
@@ -265,7 +265,6 @@ class Items extends React.Component {
   render() {
     return (
       <View>
-        <PushController />
         <StatusBar
           backgroundColor={AppStyles.colors.appBackground}
           barStyle="light-content"

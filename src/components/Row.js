@@ -97,9 +97,9 @@ class Row extends React.PureComponent {
           })
         }}
         leftContent={this.renderDeleteAction("left")}
-        leftActionActivationDistance={50}
+        leftActionActivationDistance={70}
         rightContent={this.renderDeleteAction("right")}
-        rightActionActivationDistance={50}
+        rightActionActivationDistance={70}
         onLeftActionActivate={() =>
           this.setState({ wasDeleteActionActivated: true })}
         onLeftActionDeactivate={() =>

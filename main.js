@@ -1,5 +1,9 @@
 import React from "react";
 import { Root } from "./src/config/Router";
+import { PushService } from "./src/screens/Index";
+
+PushService.configurePushNotifications();
+PushService.handlePushActions();
 
 class App extends React.Component {
   constructor(props) {
@@ -16,7 +20,20 @@ class App extends React.Component {
   ----------------------------------------------------*/
   async componentDidMount() {
     this.setState({ isReady: true });
+    PushService.setCallbacks(
+      this.handleOnPushRegister,
+      this.handleOnPushNotification
+    );
   }
+
+  /*--------------------------------------------------
+    Helpers & Handlers
+  ----------------------------------------------------*/
+  handleOnPushNotification(notification) {
+    console.log("NOTIFICATION:", notification);
+  }
+
+  handleOnPushRegister(device) {}
 
   /*--------------------------------------------------
     Render UI
