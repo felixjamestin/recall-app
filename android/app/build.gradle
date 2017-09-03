@@ -90,8 +90,8 @@ android {
         applicationId "com.recallapp_rn"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 3
-        versionName "2.1"
+        versionCode 4
+        versionName "2.2"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -125,6 +125,12 @@ android {
         dev {
             minSdkVersion 16
             applicationId 'com.recallapp_rn.dev'
+            targetSdkVersion 25
+            resValue "string", "build_config_package", "com.recallapp_rn"
+        }
+        beta {
+            minSdkVersion 16
+            applicationId 'com.recallapp_rn.beta'
             targetSdkVersion 25
             resValue "string", "build_config_package", "com.recallapp_rn"
         }

@@ -188,14 +188,14 @@ class Items extends React.Component {
     const items = [
       ItemFactory.createItem({
         value:
-          "Stop juggling 🤹 things in your head. Recall is built to let you offload things quickly.",
+        "Stop juggling 🤹 things in your head. Recall is built to let you offload things quickly.",
         reminder: "",
         incrementColors: true,
         color: AppStyles.rowColors.c
       }),
       ItemFactory.createItem({
         value:
-          "Things like people you have to 📱call back, 📚 books recommended by friends or even just groceries 🍞",
+        "Things like people you have to 📱call back, 📚 books recommended by friends or even just groceries 🍞",
         reminder: "",
         incrementColors: true,
         color: AppStyles.rowColors.b

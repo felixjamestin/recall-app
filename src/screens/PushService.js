@@ -39,9 +39,14 @@ class PushService {
       largeIcon: "ic_launcher",
       smallIcon: "ic_launcher", //"ic_notification",
       soundName: "default",
+      vibrate: true,
+      vibration: 500,
+      group: "Recall",
+      ongoing: true,
+      number: id,
       actions: `['${PushService.pushActionEnum.dismiss}','${PushService
         .pushActionEnum.snooze1hr}','${PushService.pushActionEnum
-        .snoozetillnextmorning}']`
+          .snoozetillnextmorning}']`
     });
 
     return id;
